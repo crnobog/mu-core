@@ -1,0 +1,7 @@
+Binaries/
+Intermediate/
+*.vcxproj.user
+*.sdf
+*.opensdf
+*.suo
+ipch/
