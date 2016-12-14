@@ -55,3 +55,41 @@ namespace mu
 		}
 	}
 }
+
+#ifdef MU_CORE_IMPL
+#include <sstream>
+
+void mu::dbg::LogInternal(mu::dbg::details::LogLevel level, const details::LogArg* args, size_t count)
+{
+	std::wostringstream o;
+
+	switch (level)
+	{
+	case details::LogLevel::Log:
+		break;
+	case details::LogLevel::Error:
+		break;
+	}
+
+	for (size_t i = 0; i < count; ++i)
+	{
+		switch (args->m_type)
+		{
+		case details::LogArgType::C_Str:
+			o << args->m_c_str;
+			break;
+		case details::LogArgType::Unsigned:
+			o << args->m_uint;
+			break;
+		default:
+			throw new std::runtime_error("Invalid argument type to log");
+		}
+
+		++args;
+	}
+
+	o << std::endl;
+
+	OutputDebugStringW(o.str().c_str());
+}
+#endif
