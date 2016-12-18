@@ -323,7 +323,7 @@ namespace mu
 	template<typename RANGE>
 	auto WrapRange(RANGE&& in_r)
 	{
-		typedef decltype(in_r.Front()) ElementType;
-		return ranges::ForwardRange<ElementType>(std::forward<RANGE>(in_r));
+		typedef decltype(Range(in_r).Front()) ElementType;
+		return ranges::ForwardRange<ElementType>(Range(std::forward<RANGE>(in_r)));
 	}
 }
