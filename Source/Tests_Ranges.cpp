@@ -6,6 +6,10 @@
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
+namespace Microsoft{ namespace VisualStudio {namespace CppUnitTestFramework {
+	template<> inline std::wstring ToString<char32_t>(const char32_t& t) { RETURN_WIDE_STRING((uint32_t)t); }
+}}}
+
 namespace mu_core_tests_ranges
 {
 	using namespace mu;
@@ -203,6 +207,21 @@ namespace mu_core_tests_ranges
 			for (int i = 0; !r.IsEmpty(); ++i, r.Advance())
 			{
 				Assert::AreEqual(arr[i] * 5, r.Front());
+			}
+		}
+	};
+
+	TEST_CLASS(RangeWrapperTests)
+	{
+		TEST_METHOD(WrapPointerRange)
+		{
+			int is[] = { 1, 2, 3, 4, 5 };
+			mu::ranges::ForwardRange<int> wrapped = WrapRange(Range(is));
+			
+			int index = 0;
+			for (; !wrapped.IsEmpty(); wrapped.Advance(), ++index)
+			{
+				Assert::AreEqual(is[index], wrapped.Front());
 			}
 		}
 	};
