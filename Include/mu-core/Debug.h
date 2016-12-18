@@ -8,6 +8,12 @@ namespace mu
 	{
 		namespace details
 		{
+			enum class LogLevel
+			{
+				Log,
+				Error
+			};
+
 			enum class LogArgType
 			{
 				C_Str,
@@ -45,13 +51,25 @@ namespace mu
 			};
 		}
 
-		void LogInternal(const details::LogArg*, size_t);
+		void LogInternal(details::LogLevel level, const details::LogArg*, size_t);
 		
+		template<typename ...ARGS>
+		void LogDispatch(details::LogLevel level, ARGS... args)
+		{
+			auto arr = std::array<details::LogArg, sizeof...(args)>{ {details::LogArg(args)...}};
+			LogInternal(level, arr.data(), arr.size());
+		}
+
 		template<typename ...ARGS>
 		void Log(ARGS... args)
 		{
-			auto arr = std::array<details::LogArg, sizeof...(args)>{ {details::LogArg(args)...}};
-			LogInternal(arr.data(), arr.size());
+			LogDispatch(details::LogLevel::Log, std::forward<ARGS>(args)...);
+		}
+
+		template<typename ...ARGS>
+		void Err(ARGS... args)
+		{
+			LogDispatch(details::LogLevel::Log, std::forward<ARGS>(args)...);
 		}
 	}
 }
