@@ -34,6 +34,7 @@
     <ClInclude Include="..\..\Include\mu-core\mu-core.h" />
     <ClInclude Include="..\..\Include\mu-core\Ranges.h" />
     <ClInclude Include="..\..\Include\mu-core\Scope.h" />
+    <ClInclude Include="..\..\Include\mu-core\String.h" />
     <ClInclude Include="..\..\Include\mu-core\Utils.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

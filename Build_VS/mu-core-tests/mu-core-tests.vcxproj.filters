@@ -50,6 +50,9 @@
     <ClInclude Include="..\..\Include\mu-core\FileReader.h">
       <Filter>Include</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Include\mu-core\String.h">
+      <Filter>Include</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Include\mu-core\mu-core.h">
       <Filter>Include</Filter>
     </ClInclude>
