@@ -32,7 +32,7 @@ FileReader::FileReader(void* handle) : m_handle(handle)
 
 FileReader FileReader::Open(const char* path)
 {
-	// TODO: Would rather do this conversion on the stack if possible, or with a custom temp allocator at least
+	// #TODO: Would rather do this conversion on the stack if possible, or with a custom temp allocator at least
 	std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> convert{};
 	std::wstring wide_path = convert.from_bytes(path);
 

@@ -10,61 +10,48 @@ template<typename T>
 class ArrayView;
 
 template<typename T>
-class Array
-{
-	T* m_data		= nullptr;
-	size_t m_num	= 0;
-	size_t m_max	= 0;
+class Array {
+	T* m_data = nullptr;
+	size_t m_num = 0;
+	size_t m_max = 0;
 
 public:
-	Array()
-	{
-	}
+	Array() {}
 
-	Array(std::initializer_list<T> init)
-	{
+	Array(std::initializer_list<T> init) {
 		InitEmpty(init.size());
-		for (auto&& item : init)
-		{
+		for (auto&& item : init) {
 			AddSafe(item);
 		}
 	}
 
 	template<class RANGE>
-	Array(RANGE&& r)
-	{
-		for (auto&& item : r)
-		{
+	Array(RANGE&& r) {
+		for (auto&& item : r) {
 			Add(item);
 		}
 	}
 
-	Array(const Array& other)
-	{
-		InitSize(other.m_num);
-		for (auto&& item : other)
-		{
+	Array(const Array& other) {
+		InitEmpty(other.m_num);
+		for (auto&& item : other) {
 			Add(item);
 		}
 	}
 
-	Array(Array&& other)
-	{
+	Array(Array&& other) {
 		*this = std::forward<Array>(other);
 	}
 
-	Array& operator=(const Array& other)
-	{
+	Array& operator=(const Array& other) {
 		InitEmpty(other.Num());
-		for (const auto& item : other)
-		{
+		for (const auto& item : other) {
 			Add(item);
 		}
 		return *this;
 	}
 
-	Array& operator=(Array&& other)
-	{
+	Array& operator=(Array&& other) {
 		this->~Array();
 
 		std::swap(m_data, other.m_data);
@@ -73,22 +60,18 @@ public:
 		return *this;
 	}
 
-	~Array()
-	{
+	~Array() {
 		Destruct(0, m_num);
 		if (m_data) { free(m_data); }
 	}
 
-	void Reserve(size_t new_max)
-	{
-		if (new_max > m_max)
-		{
+	void Reserve(size_t new_max) {
+		if (new_max > m_max) {
 			Grow(new_max);
 		}
 	}
 
-	static Array MakeUninitialized(size_t num)
-	{
+	static Array MakeUninitialized(size_t num) {
 		Array ret{};
 		ret.m_data = (T*)malloc(sizeof(T)* num);
 		ret.m_num = num;
@@ -97,88 +80,108 @@ public:
 	}
 
 	template<typename... US>
-	static Array MakeUnique(US&&... us)
-	{
+	static Array Make(US&&... us) {
 		Array ret{};
 		ret.Reserve(sizeof...(US));
-		ret.AddManyUnique(us...);
+		ret.EmplaceMany(std::forward<US>(us)...);
 		return std::move(ret);
 	}
 
-	size_t Add(const T& item)
-	{
+	template<typename... US>
+	static Array MakeUnique(US&&... us) {
+		Array ret{};
+		ret.Reserve(sizeof...(US));
+		ret.AddManyUnique(std::forward<US>(us)...);
+		return std::move(ret);
+	}
+
+	size_t Add(const T& item) {
 		EnsureSpace(m_num + 1);
 		return AddSafe(item);
 	}
 
-	size_t Add(T&& item) 
-	{
+	size_t Add(T&& item) {
 		EnsureSpace(m_num + 1);
-		return AddSafe(std::forward<T>(item));
+		return EmplaceSafe(std::forward<T>(item));
 	}
 
-	void AddUnique(const T& item)
-	{
-		if (!Contains(item))
-		{
+	void AddUnique(const T& item) {
+		if (!Contains(item)) {
 			Add(item);
 		}
 	}
 
-	void AddUnique(T&& item)
-	{
-		if (!Contains(item))
-		{
+	void AddUnique(T&& item) {
+		if (!Contains(item)) {
 			Add(std::forward<T>(item));
 		}
 	}
 
 	template<typename U>
-	void AddManyUnique(U&& u)
-	{
+	void AddManyUnique(U&& u) {
 		AddUnique(std::forward<U>(u));
 	}
 
 	template<typename U, typename... US>
-	void AddManyUnique(U&& u, US&&... us)
-	{
+	void AddManyUnique(U&& u, US&&... us) {
 		AddUnique(std::forward<U>(u));
 		AddManyUnique(std::forward<US>(us)...);
 	}
 
-	size_t Emplace(T&& item)
-	{
+	template<typename U>
+	void AddMany(U&& u) {
+		Add(std::forward<U>(u));
+	}
+
+	template<typename U, typename... US>
+	void AddMany(U&& u, US&&... us) {
+		Add(std::forward<U>(u));
+		AddMany(std::forward<US>(us)...);
+	}
+
+	template<typename U>
+	void EmplaceMany(U&& u) {
+		Emplace(std::forward<U>(u));
+	}
+
+	template<typename U, typename... US>
+	void EmplaceMany(U&& u, US&&... us) {
+		Emplace(std::forward<U>(u));
+		EmplaceMany(std::forward<US>(us)...);
+	}
+
+	size_t Emplace(T&& item) {
 		EnsureSpace(m_num + 1);
-		return AddSafe(std::forward<T>(item));
+		return EmplaceSafe(std::forward<T>(item));
 	}
 
 	template<typename... US>
-	size_t Emplace(US&&... us)
-	{
+	size_t Emplace(US&&... us) {
 		return Add(T(std::forward<US>(us)...));
 	}
 
 	template<typename RANGE>
-	void Append(RANGE&& r)
-	{
-		for (auto&& item : r)
-		{
+	void Append(RANGE&& r) {
+		for (auto&& item : r) {
 			Add(std::forward<decltype(item)>(item));
 		}
 	}
 
-	void AppendRaw(const T* items, size_t count)
-	{
+	void AppendRaw(const T* items, size_t count) {
 		Append(mu::Range(items, count));
 	}
 
-	T& operator[](size_t index)
-	{
+	void RemoveAt(size_t index) {
+		mu::Move(mu::Range(m_data + index, m_num - index),
+			 mu::Range(m_data + index + 1, m_num - index - 1));
+		m_num -= 1;
+	}
+
+	T& operator[](size_t index) {
 		return m_data[index];
 	}
 
-	const T& operator[](size_t index) const
-	{
+	const T& operator[](size_t index) const {
 		return m_data[index];
 	}
 
@@ -189,12 +192,9 @@ public:
 	size_t Max() const { return m_max; }
 	bool IsEmpty() const { return m_num == 0; }
 
-	bool Contains(const T& item) const
-	{
-		for (const T& t : *this)
-		{
-			if (t == item)
-			{
+	bool Contains(const T& item) const {
+		for (const T& t : *this) {
+			if (t == item) {
 				return true;
 			}
 		}
@@ -208,23 +208,19 @@ public:
 	auto end() const { return mu::MakeRangeIterator(mu::Range((T*)nullptr, 0)); }
 
 private:
-	void InitEmpty(size_t num)
-	{
+	void InitEmpty(size_t num) {
 		m_data = (T*)malloc(sizeof(T) * num);
 		m_num = 0;
 		m_max = num;
 	}
 
-	void EnsureSpace(size_t num)
-	{
-		if (num > m_max)
-		{
+	void EnsureSpace(size_t num) {
+		if (num > m_max) {
 			Grow(num > m_max * 2 ? num : m_max * 2);
 		}
 	}
 
-	void Grow(size_t new_size)
-	{
+	void Grow(size_t new_size) {
 		T* new_data = (T*)malloc(sizeof(T) * new_size);
 		auto from = mu::Range(m_data, m_num);
 		auto to = mu::Range(new_data, m_num);
@@ -233,22 +229,18 @@ private:
 		m_max = new_size;
 	}
 
-	size_t AddSafe(const T& item)
-	{
+	size_t AddSafe(const T& item) {
 		new(m_data + m_num) T(item);
 		return m_num++;
 	}
 
-	size_t AddSafe(T&& item)
-	{
+	size_t EmplaceSafe(T&& item) {
 		new(m_data + m_num) T(std::forward<T>(item));
 		return m_num++;
 	}
 
-	void Destruct(size_t start, size_t num)
-	{
-		for (size_t i = start; i < start + num; ++i)
-		{
+	void Destruct(size_t start, size_t num) {
+		for (size_t i = start; i < start + num; ++i) {
 			m_data[i].~T();
 		}
 	}

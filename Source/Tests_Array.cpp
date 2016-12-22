@@ -113,5 +113,21 @@ namespace mu_core_tests_array
 
 			Assert::AreEqual(3, DestructCount, nullptr, LINE_INFO());
 		}
+
+		TEST_METHOD(TestRemove) {
+			Array<int32_t> arr{ 1, 2, 3, 4, 5, 6, 7 };
+
+			arr.RemoveAt(0);
+			Assert::AreEqual(size_t(6), arr.Num());
+			Assert::AreEqual(2, arr[0]);
+
+			arr.RemoveAt(3);
+			Assert::AreEqual(size_t(5), arr.Num());
+			Assert::AreEqual(6, arr[3]);
+
+			arr.RemoveAt(4);
+			Assert::AreEqual(size_t(4), arr.Num());
+			Assert::AreEqual(6, arr[3]);
+		}
 	};
 }

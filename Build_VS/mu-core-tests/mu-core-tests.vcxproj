@@ -35,7 +35,11 @@
     <ClInclude Include="..\..\Include\mu-core\Ranges.h" />
     <ClInclude Include="..\..\Include\mu-core\Scope.h" />
     <ClInclude Include="..\..\Include\mu-core\String.h" />
+    <ClInclude Include="..\..\Include\mu-core\StringFormat.h" />
     <ClInclude Include="..\..\Include\mu-core\Utils.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Natvis Include="..\mu-core.natvis" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{DF70817F-475B-4C28-A313-391D0CC6A623}</ProjectGuid>

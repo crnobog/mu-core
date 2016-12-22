@@ -61,7 +61,10 @@ namespace mu
 	}
 
 	template<typename... RANGES>
-	auto Zip(RANGES... ranges) { return ranges::ZipRange<RANGES...>(Range(ranges)...); }
+	auto Zip(RANGES&&... ranges) 
+	{ 
+		return ranges::ZipRange<decltype(Range(std::forward<RANGES>(ranges)))...>(Range(std::forward<RANGES>(ranges))...); 
+	}
 
 	template<typename T=size_t>
 	inline auto Iota(T start = 0) { return ranges::IotaRange<T>(start); }

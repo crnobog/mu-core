@@ -56,5 +56,11 @@
     <ClInclude Include="..\..\Include\mu-core\mu-core.h">
       <Filter>Include</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Include\mu-core\StringFormat.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Natvis Include="..\mu-core.natvis" />
   </ItemGroup>
 </Project>
