@@ -1,5 +1,6 @@
 #pragma once
 
+// TODO: Can we remove this and use a standard C array?
 #include <array>
 
 namespace mu
@@ -73,6 +74,15 @@ namespace mu
 		}
 	}
 }
+
+#define BREAK_OR_CRASH (__debugbreak(),(*(int*)nullptr)++)
+#define ASSERT_MSG(...) (mu::dbg::Err(__VA_ARGS__))
+
+#define CHECKF(EXPRESSION, ...) if(!(EXPRESSION)) { ASSERT_MSG(__VA_ARGS__); BREAK_OR_CRASH; }
+#define ENSUREF(EXPRESSION, ...) ((EXPRESSION)?true:(ASSERT_MSG(__VA_ARGS__),BREAK_OR_CRASH,false))
+
+#define CHECK(EXPRESSION) CHECKF(EXPRESSION, "Check failed: " #EXPRESSION)
+#define ENSURE(EXPRESSION) ENSUREF(EXPRESSION, "Ensure failed: " #EXPRESSION)
 
 #ifdef MU_CORE_IMPL
 #include <sstream>
