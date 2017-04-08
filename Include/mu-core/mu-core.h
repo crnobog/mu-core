@@ -15,6 +15,7 @@
 
 #endif
 
+#include "PrimitiveTypes.h"
 #include "Algorithms.h"
 #include "Array.h"
 #include "Debug.h"
@@ -27,3 +28,4 @@
 #include "Scope.h"
 #include "String.h"
 #include "Utils.h"
+#include "Vectors.h"
