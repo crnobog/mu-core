@@ -73,6 +73,26 @@ namespace mu
 		return r;
 	}
 
+	template<typename RANGE, typename FUNC>
+	auto FindLast(RANGE&& in_r, FUNC&& f) {
+		auto r = Find(in_r, f);
+		if (r.IsEmpty()) {
+			return r;
+		}
+		while (true) {
+			auto next = FindNext(r, f);
+			if (next.IsEmpty()) {
+				return r;
+			}
+			r = next;
+		}
+	}
+
+	template<typename RANGE, typename FUNC>
+	bool Contains(RANGE&& in_r, FUNC&& f) {
+		return !Find(std::forward<RANGE>(in_r), std::forward<FUNC>(f) ).IsEmpty();
+	}
+
 	// Fill the range with objects constructs with the given arguments
 	template<typename RANGE, typename... ARGS>
 	void FillConstruct(RANGE&& in_r, ARGS... args)
