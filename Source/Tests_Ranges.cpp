@@ -216,7 +216,7 @@ namespace mu_core_tests_ranges
 		TEST_METHOD(WrapPointerRange)
 		{
 			int is[] = { 1, 2, 3, 4, 5 };
-			mu::ranges::ForwardRange<int> wrapped = WrapRange(Range(is));
+			mu::ForwardRange<int> wrapped = WrapRange(Range(is));
 			
 			int index = 0;
 			for (; !wrapped.IsEmpty(); wrapped.Advance(), ++index)

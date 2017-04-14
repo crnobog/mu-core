@@ -52,7 +52,7 @@ FileReader FileReader::Open(const char* path) {
 	return FileReader(handle);
 }
 
-mu::ranges::PointerRange<uint8_t>  FileReader::Read(mu::ranges::PointerRange<uint8_t> dest_range) {
+mu::PointerRange<uint8_t>  FileReader::Read(mu::PointerRange<uint8_t> dest_range) {
 	const uint32_t max_per_call = std::numeric_limits<uint32_t>::max();
 	while (!dest_range.IsEmpty()) {
 		uint32_t bytes_read = 0;

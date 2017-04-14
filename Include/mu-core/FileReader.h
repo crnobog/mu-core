@@ -15,7 +15,7 @@ public:
 
 	static FileReader Open(const char* path);
 
-	mu::ranges::PointerRange<uint8_t> Read(mu::ranges::PointerRange<uint8_t> dest_range);
+	mu::PointerRange<uint8_t> Read(mu::PointerRange<uint8_t> dest_range);
 
 	bool IsValidFile() const { return m_handle != nullptr; }
 	int64_t GetFileSize() const;
