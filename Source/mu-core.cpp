@@ -1,3 +1,4 @@
+#define MU_CORE_IMPL
 #include "mu-core/mu-core.h"
 
 #include "Windows.h"
@@ -78,3 +79,89 @@ Array<uint8_t> LoadFileToArray(const char* path) {
 	reader.Read(mu::Range(arr));
 	return std::move(arr);
 }
+
+namespace mu {
+	StringFormatArg::StringFormatArg(const char* c_str)
+		: m_type(StringFormatArgType::C_Str)
+		, m_c_str(c_str) {}
+
+	StringFormatArg::StringFormatArg(const String_T<char>& str) {
+		if (str.IsEmpty()) {
+			m_type = StringFormatArgType::None;
+		}
+		else {
+			m_type = StringFormatArgType::C_Str;
+			m_c_str = str.GetRaw();
+		}
+	}
+
+	StringFormatArg::StringFormatArg(int32_t i32)
+		: m_type(StringFormatArgType::Unsigned)
+		, m_uint(i32) {}
+
+	StringFormatArg::StringFormatArg(uint32_t u32)
+		: m_type(StringFormatArgType::Unsigned)
+		, m_uint(u32) {}
+
+	StringFormatArg::StringFormatArg(size_t s)
+		: m_type(StringFormatArgType::Unsigned)
+		, m_uint(s) {}
+
+
+	String WideStringToUTF8(PointerRange<const wchar_t> in) {
+		std::codecvt_utf8_utf16<wchar_t> conv;
+		std::mbstate_t mb{};
+		char out_buf[128];
+		String s;
+		while (!in.IsEmpty()) {
+			const wchar_t* in_next = nullptr;
+			char* out_next = nullptr;
+			std::codecvt_base::result res = conv.out(mb, &in.Front(), &in.Front() + in.Size(), in_next,
+				out_buf, out_buf + ArraySize(out_buf), out_next);
+			CHECK(res != std::codecvt_base::noconv);
+			if (res == std::codecvt_base::error) {
+				return String{};
+			}
+
+			s.Append(Range(out_buf, out_next));
+
+			if (res == std::codecvt_base::ok) {
+				break;
+			}
+		}
+		return s;
+	}
+
+	namespace paths {
+		PointerRange<const char> GetDirectory(PointerRange<const char> r) {
+			auto end = FindLast(r, [](const char c) { return c == '/' || c == '\\'; });
+			if (end.IsEmpty()) {
+				// return empty, must be filename only?
+				return PointerRange<const char>{ };
+			}
+			return PointerRange<const char>{ &r.Front(), &end.Front() + 1 };
+		}
+
+		PointerRange<const char> GetExecutablePath() {
+			struct Initializer {
+				String path;
+				Initializer() {
+					wchar_t local_buffer[1024];
+					u32 size = GetModuleFileNameW(nullptr, local_buffer, (u32)ArraySize(local_buffer));
+					if (size) {
+						path = WideStringToUTF8(Range(local_buffer, size));
+					}
+				}
+			};
+			static Initializer init;
+			return Range(init.path);
+		}
+		PointerRange<const char> GetExecutableDirectory() {
+			return GetDirectory(GetExecutablePath());
+		}
+
+	}
+}
+
+
+

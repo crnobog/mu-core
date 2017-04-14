@@ -18,6 +18,12 @@
     <ClCompile Include="..\..\Source\Tests_Ranges.cpp">
       <Filter>Source</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\Tests_String.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\mu-core.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Include\mu-core\Functors.h">
@@ -57,6 +63,9 @@
       <Filter>Include</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Include\mu-core\StringFormat.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Include\mu-core\Paths.h">
       <Filter>Include</Filter>
     </ClInclude>
   </ItemGroup>
