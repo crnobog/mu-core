@@ -28,13 +28,13 @@ namespace mu {
 			}
 			m_data.Add('\0');
 		}
-
+		
 		template<typename OtherChar, typename SizeType>
 		String_T(std::tuple<OtherChar*, SizeType> t) {
 			const auto* str = std::get<0>(t);
 			auto len = std::get<1>(t);
 			AppendRange(Range(str, str + len));
-			}
+		}
 
 		template<typename... RANGES>
 		explicit String_T(RANGES&&... rs) {
@@ -95,7 +95,7 @@ namespace mu {
 				m_data.Add(r.Front());
 			}
 			AddTrailingNull();
-			}
+		}
 
 		template<typename RANGE, typename... RANGES>
 		void AppendRanges(RANGE r, RANGES... rs) {
@@ -170,4 +170,8 @@ namespace mu {
 		}
 		return s;
 	}
+
+
+	String WideStringToUTF8(PointerRange<const wchar_t> in);
+	String_T<wchar_t> UTF8StringToWide(PointerRange<const char> in);
 }
