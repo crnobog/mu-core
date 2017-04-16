@@ -1,7 +1,7 @@
 #pragma once
 
-#include "mu-core/String.h"
-#include <cstdint>
+#include "mu-core/PrimitiveTypes.h"
+#include <tuple>
 
 enum class StringFormatArgType {
 	None,
@@ -13,16 +13,18 @@ namespace mu {
 	template<typename T> class String_T;
 
 	struct StringFormatArg {
-		StringFormatArgType m_type;
+		StringFormatArgType m_type = StringFormatArgType::None;
 		union {
-			const char* m_c_str;
-			uint64_t m_uint;
+			std::tuple<const char*, size_t> m_c_str;
+			u64 m_uint;
 		};
-
+		StringFormatArg() {}
+		StringFormatArg(const StringFormatArg& other);
+		StringFormatArg(StringFormatArg&& other);
 		StringFormatArg(const char* c_str);
 		StringFormatArg(const String_T<char>& str);
-		StringFormatArg(int32_t i32);
-		StringFormatArg(uint32_t u32);
+		StringFormatArg(i32 i);
+		StringFormatArg(u32 u);
 		StringFormatArg(size_t s);
 	};
 }

@@ -1,55 +1,141 @@
 #define MU_CORE_IMPL
 #include "mu-core/mu-core.h"
 
-#include "Windows.h"
-#include "stdarg.h"
-#include <sstream> // TODO remove
+#include <codecvt>
 
-void mu::dbg::LogInternal(mu::dbg::details::LogLevel level, i32 count, ...) {
-	std::wostringstream o;
+template<typename DERIVED, typename FROM_CHAR, typename TO_CHAR>
+class StringConvRange_UTF8_UTF16_Base {
+	std::codecvt_utf8_utf16<wchar_t> conv;
+	std::mbstate_t mb{};
+	mu::PointerRange<const FROM_CHAR> source;
+	TO_CHAR buffer[256];
+	bool empty = false;
 
-	switch (level) {
-	case details::LogLevel::Log:
-		break;
-	case details::LogLevel::Error:
-		break;
+	// Since we use the same converter but a different member function for each direction, we need these overloads but each subclass only uses one
+	std::codecvt_base::result DoConv(const char* in_start, const char* in_end, const char*& in_next, wchar_t* out_start, wchar_t* out_end, wchar_t*& out_next) {
+		return conv.in(mb, in_start, in_end, in_next, out_start, out_end, out_next);
 	}
+	std::codecvt_base::result DoConv(const wchar_t* in_start, const wchar_t* in_end, const wchar_t*& in_next, char* out_start, char* out_end, char*& out_next) {
+		return conv.out(mb, in_start, in_end, in_next, out_start, out_end, out_next);
+	}
+public:
+	StringConvRange_UTF8_UTF16_Base(mu::PointerRange<const FROM_CHAR> in) : source(in) {
+		Advance();
+	}
+	bool IsEmpty() const { return empty; }
+	const TO_CHAR* Front() const { return buffer; }
+	void Advance() {
+		if (source.IsEmpty()) {
+			empty = true;
+			return;
+		}
+		const FROM_CHAR* in_next = nullptr, *in_start = &source.Front();
+		size_t in_size = source.Size();
+		TO_CHAR* out_next = nullptr;
+		std::codecvt_base::result res = DoConv(in_start, in_start + in_size, in_next,
+			buffer, buffer + ArraySize(buffer) - 1, out_next);
+		CHECK(res != std::codecvt_base::noconv);
+
+		// insert null byte so callers can use Front as a null-terminated c string
+		*out_next = 0;
+
+		source = { in_next, in_start + in_size };
+		if (res == std::codecvt_base::error) {
+			empty = true;
+		}
+	}
+};
+
+class StringConvRange_UTF8_UTF16 : public StringConvRange_UTF8_UTF16_Base<StringConvRange_UTF8_UTF16, char, wchar_t> {
+public:
+	StringConvRange_UTF8_UTF16(mu::PointerRange<const char> in) : StringConvRange_UTF8_UTF16_Base(in) {
+	}
+};
+class StringConvRange_UTF16_UTF8 : public StringConvRange_UTF8_UTF16_Base<StringConvRange_UTF16_UTF8, wchar_t, char> {
+public:
+	StringConvRange_UTF16_UTF8(mu::PointerRange<const wchar_t> in) : StringConvRange_UTF8_UTF16_Base(in) {}
+};
 	
-	va_list args;
-	va_start(args, count);
-	for (size_t i = 0; i < count; ++i) {
-		details::LogArg arg = va_arg(args, details::LogArg);
+namespace mu {
+	String WideStringToUTF8(PointerRange<const wchar_t> in) {
+		String s;
+		for (StringConvRange_UTF16_UTF8 conv{ in }; !conv.IsEmpty(); conv.Advance()) {
+			s.Append(conv.Front());
+		}
+		
+		return s;
+	}
+	String_T<wchar_t> UTF8StringToWide(PointerRange<const char> in) {
+		String_T<wchar_t> s;
+		for (StringConvRange_UTF8_UTF16 conv{ in }; !conv.IsEmpty(); conv.Advance()) {
+			s.Append(conv.Front());
+		}
+		return s;
+	}
+}
+
+void mu::dbg::LogInternal(mu::dbg::details::LogLevel, i32 count, StringFormatArg* args) {
+	wchar_t local_buf[1024];
+	wchar_t* local_cursor = local_buf;
+	auto LocalFlush = [&]() {
+		if (local_cursor != local_buf) {
+			*local_cursor = 0; // null terminate before printing
+			OutputDebugStringW(local_buf);
+		}
+		local_cursor = local_buf;
+	};
+	auto RemainingSpace = [&]() { return ArraySize(local_buf) - (local_cursor - local_buf); };
+	
+	for ( auto& arg : Range(args, args+count) ) {
 		switch (arg.m_type) {
-		case details::LogArgType::C_Str:
-			o << arg.m_c_str;
+		case StringFormatArgType::C_Str:
+		{
+			size_t size = std::get<1>(arg.m_c_str);
+			const char* s = std::get<0>(arg.m_c_str);
+			if (size == 0) {
+				size = strlen(s);
+			}
+
+			// We don't know the internal size of the converter so flush and then copy wholesale 
+			// - should the converter return a size tuple so we can adaptively avoid each flush without strlen?
+			// - or we could expose the max size from the converter
+			LocalFlush();
+			StringConvRange_UTF8_UTF16 conv{ Range(s, s + size) };
+			for (; !conv.IsEmpty(); conv.Advance()) {
+				OutputDebugStringW(conv.Front());
+			}
+		}
 			break;
-		case details::LogArgType::Unsigned:
-			o << arg.m_uint;
+		case StringFormatArgType::Unsigned:
+		{
+			if (RemainingSpace() <= 20) {
+				LocalFlush();
+			}
+			int written = swprintf(local_cursor, RemainingSpace(), L"%llu", arg.m_uint);
+			if (written >= 0) {
+				local_cursor += written;
+			}
+		}
 			break;
 		default:
 			throw new std::runtime_error("Invalid argument type to log");
 		}
-
-		++args;
 	}
 
-	o << std::endl;
-
-	OutputDebugStringW(o.str().c_str());
+	int written = swprintf(local_cursor, RemainingSpace(), L"\n");
+	if (written > 0) {
+		local_cursor += written;
+	}
+	LocalFlush();
 }
 
-#include <stdexcept>
-#include <codecvt>
-#include <locale>
 
 FileReader::FileReader(void* handle) : m_handle(handle) {}
 
 FileReader FileReader::Open(const char* path) {
-	// #TODO: Would rather do this conversion on the stack if possible, or with a custom temp allocator at least
-	std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> convert{};
-	std::wstring wide_path = convert.from_bytes(path);
+	auto wide_path = mu::UTF8StringToWide(mu::Range(path, path + strlen(path) + 1));
 
-	HANDLE handle = CreateFile(wide_path.c_str(), GENERIC_READ, FILE_SHARE_READ, nullptr, OPEN_EXISTING, 0, nullptr);
+	HANDLE handle = CreateFile(wide_path.GetRaw(), GENERIC_READ, FILE_SHARE_READ, nullptr, OPEN_EXISTING, 0, nullptr);
 	return FileReader(handle);
 }
 
@@ -81,9 +167,29 @@ Array<uint8_t> LoadFileToArray(const char* path) {
 }
 
 namespace mu {
+	StringFormatArg::StringFormatArg(const StringFormatArg& other) : m_type(other.m_type) {
+		switch (m_type) {
+		case StringFormatArgType::C_Str:
+			m_c_str = other.m_c_str;
+			break;
+		case StringFormatArgType::Unsigned:
+			m_uint = other.m_uint;
+			break;
+		}
+	}
+	StringFormatArg::StringFormatArg(StringFormatArg&& other) : m_type(other.m_type) {
+		switch (m_type) {
+		case StringFormatArgType::C_Str:
+			m_c_str = other.m_c_str;
+			break;
+		case StringFormatArgType::Unsigned:
+			m_uint = other.m_uint;
+			break;
+		}
+	}
 	StringFormatArg::StringFormatArg(const char* c_str)
 		: m_type(StringFormatArgType::C_Str)
-		, m_c_str(c_str) {}
+		, m_c_str(c_str, 0) {}
 
 	StringFormatArg::StringFormatArg(const String_T<char>& str) {
 		if (str.IsEmpty()) {
@@ -91,46 +197,23 @@ namespace mu {
 		}
 		else {
 			m_type = StringFormatArgType::C_Str;
-			m_c_str = str.GetRaw();
+			m_c_str = { str.GetRaw(), str.GetLength() };
 		}
 	}
 
-	StringFormatArg::StringFormatArg(int32_t i32)
+	StringFormatArg::StringFormatArg(i32 i)
 		: m_type(StringFormatArgType::Unsigned)
-		, m_uint(i32) {}
+		, m_uint(i) {}
 
-	StringFormatArg::StringFormatArg(uint32_t u32)
+	StringFormatArg::StringFormatArg(u32 u)
 		: m_type(StringFormatArgType::Unsigned)
-		, m_uint(u32) {}
+		, m_uint(u) {}
 
 	StringFormatArg::StringFormatArg(size_t s)
 		: m_type(StringFormatArgType::Unsigned)
 		, m_uint(s) {}
 
 
-	String WideStringToUTF8(PointerRange<const wchar_t> in) {
-		std::codecvt_utf8_utf16<wchar_t> conv;
-		std::mbstate_t mb{};
-		char out_buf[128];
-		String s;
-		while (!in.IsEmpty()) {
-			const wchar_t* in_next = nullptr;
-			char* out_next = nullptr;
-			std::codecvt_base::result res = conv.out(mb, &in.Front(), &in.Front() + in.Size(), in_next,
-				out_buf, out_buf + ArraySize(out_buf), out_next);
-			CHECK(res != std::codecvt_base::noconv);
-			if (res == std::codecvt_base::error) {
-				return String{};
-			}
-
-			s.Append(Range(out_buf, out_next));
-
-			if (res == std::codecvt_base::ok) {
-				break;
-			}
-		}
-		return s;
-	}
 
 	namespace paths {
 		PointerRange<const char> GetDirectory(PointerRange<const char> r) {

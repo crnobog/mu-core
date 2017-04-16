@@ -1,6 +1,8 @@
 #pragma once
 
-#include "PrimitiveTypes.h"
+#include "mu-core/PrimitiveTypes.h"
+#include "mu-core/StringFormat.h"
+#include <tuple>
 
 namespace mu
 {
@@ -13,58 +15,22 @@ namespace mu
 				Log,
 				Error
 			};
-
-			enum class LogArgType
-			{
-				None,
-				C_Str,
-				Unsigned
-			};
-
-			struct LogArg
-			{
-				LogArgType m_type = LogArgType::None;
-				union
-				{
-					const char* m_c_str;
-					u64 m_uint;
-				};
-
-				LogArg() : m_type(LogArgType::None) {}
-				LogArg(const char* c_str)
-					: m_type(LogArgType::C_Str)
-					, m_c_str(c_str)
-				{}
-
-				LogArg(i32 i)
-					: m_type(LogArgType::Unsigned)
-					, m_uint(i)
-				{}
-
-				LogArg(u32 u)
-					: m_type(LogArgType::Unsigned)
-					, m_uint(u)
-				{}
-
-				LogArg(size_t s)
-					: m_type(LogArgType::Unsigned)
-					, m_uint(s)
-				{}
-			};
 		}
 
-		void LogInternal(details::LogLevel level, i32 count, ...);
+		void LogInternal(details::LogLevel level, i32 count, StringFormatArg* args);
 		
 		template<typename ...ARGS>
 		void Log(ARGS... args)
 		{
-			LogInternal(details::LogLevel::Log, sizeof...(ARGS), details::LogArg(args)...);
+			StringFormatArg wrap_args[] = { StringFormatArg(std::forward<ARGS>(args))... };
+			LogInternal(details::LogLevel::Log, sizeof...(ARGS), wrap_args);
 		}
 
 		template<typename ...ARGS>
 		void Err(ARGS... args)
 		{
-			LogInternal(details::LogLevel::Log, sizeof...(ARGS), details::LogArg(args)...);
+			StringFormatArg wrap_args[] = { StringFormatArg(std::forward<ARGS>(args))... };
+			LogInternal(details::LogLevel::Log, sizeof...(ARGS), wrap_args);
 		}
 	}
 }
