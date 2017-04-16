@@ -55,7 +55,7 @@ class StringConvRange_UTF16_UTF8 : public StringConvRange_UTF8_UTF16_Base<String
 public:
 	StringConvRange_UTF16_UTF8(mu::PointerRange<const wchar_t> in) : StringConvRange_UTF8_UTF16_Base(in) {}
 };
-	
+
 namespace mu {
 	String WideStringToUTF8(PointerRange<const wchar_t> in) {
 		String s;
@@ -223,6 +223,29 @@ namespace mu {
 				return PointerRange<const char>{ };
 			}
 			return PointerRange<const char>{ &r.Front(), &end.Front() + 1 };
+		}
+
+		PointerRange<const char> GetFilename(PointerRange<const char> r) {
+			auto end = FindLast(r, [](const char c) { return c == '/' || c == '\\'; });
+			if (end.IsEmpty()) {
+				// return input, must be filename only?
+				return r;
+			}
+			end.Advance(); 
+			return end;
+		}
+
+
+		PointerRange<const char> GetExtension(PointerRange<const char> r) {
+			auto start = FindLast(r, [](const char c) { return c == '/' || c == '\\'; });
+			if (start.IsEmpty()) {
+				start = r;
+			}
+			auto dot = FindLast(start, [](const char c) { return c == '.'; });
+			if (!dot.IsEmpty()) {
+				dot.Advance();
+			}
+			return dot; 
 		}
 
 		PointerRange<const char> GetExecutablePath() {

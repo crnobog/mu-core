@@ -24,6 +24,9 @@
     <ClCompile Include="..\..\Source\mu-core.cpp">
       <Filter>Source</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\Tests_Paths.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Include\mu-core\Functors.h">

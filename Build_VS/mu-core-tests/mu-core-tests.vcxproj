@@ -22,6 +22,7 @@
     <ClCompile Include="..\..\Source\mu-core.cpp" />
     <ClCompile Include="..\..\Source\Tests_Algorithms.cpp" />
     <ClCompile Include="..\..\Source\Tests_Array.cpp" />
+    <ClCompile Include="..\..\Source\Tests_Paths.cpp" />
     <ClCompile Include="..\..\Source\Tests_Ranges.cpp" />
     <ClCompile Include="..\..\Source\Tests_String.cpp" />
   </ItemGroup>
