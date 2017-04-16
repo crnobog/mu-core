@@ -1,20 +1,8 @@
-#include "CppUnitTest.h"
+#include "mu-core-tests.inl"
 #include "mu-core/String.h"
 #include "mu-core/Ranges.h"
 
 
-using namespace Microsoft::VisualStudio::CppUnitTestFramework;
-
-namespace Microsoft {
-	namespace VisualStudio {
-		namespace CppUnitTestFramework {
-			template<>
-			std::wstring ToString(const mu::String& s) {
-				return L"";
-			}
-		}
-	}
-}
 namespace mu_core_tests_string {
 	using namespace mu;
 
@@ -26,7 +14,7 @@ public:
 	}
 	TEST_METHOD(FromTuple) {
 		const char t[] = "test";
-		std::tuple<const char*, size_t> tup{ t, sizeof(t) - 1 };
+		std::tuple<const char*, size_t> tup{ t, sizeof(t) };
 		String s{ tup };
 		Assert::AreEqual<size_t>(4, s.GetLength());
 	}
@@ -40,6 +28,17 @@ public:
 		}
 		String s{ a };
 		Assert::AreEqual<size_t>(4, s.GetLength());
+	}
+	TEST_METHOD(FromRange) {
+		const char abc[] = "abc";
+		String s{ Range(abc) };
+		Assert::AreEqual<String>(abc, s);
+	}
+	TEST_METHOD(FromMultipleRanges) {
+		const char abc[] = "abc";
+		const char def[] = "def";
+		String s{ Range(abc), Range(def) };
+		Assert::AreEqual<String>("abcdef", s);
 	}
 	};
 

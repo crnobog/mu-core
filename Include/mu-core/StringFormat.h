@@ -1,6 +1,7 @@
 #pragma once
 
 #include "mu-core/PrimitiveTypes.h"
+#include "mu-core/Metaprogramming.h"
 #include <tuple>
 
 enum class StringFormatArgType {
@@ -26,5 +27,11 @@ namespace mu {
 		StringFormatArg(i32 i);
 		StringFormatArg(u32 u);
 		StringFormatArg(size_t s);
+
+		template<typename RANGE, EnableIf<RANGE::IsContiguous && RANGE::HasSize>...>
+		StringFormatArg(RANGE&& r)
+			: m_c_str(&r.Front(), r.Size())
+			, m_type(StringFormatArgType::C_Str)
+		{}
 	};
 }

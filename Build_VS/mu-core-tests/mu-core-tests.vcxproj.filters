@@ -68,8 +68,22 @@
     <ClInclude Include="..\..\Include\mu-core\Paths.h">
       <Filter>Include</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Include\mu-core\PrimitiveTypes.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Include\mu-core\RefCountPtr.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Include\mu-core\Vectors.h">
+      <Filter>Include</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Natvis Include="..\mu-core.natvis" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\Source\mu-core-tests.inl">
+      <Filter>Include</Filter>
+    </None>
   </ItemGroup>
 </Project>

@@ -4,7 +4,8 @@
 #include <limits>
 #include <memory>
 
-#include "Functors.h"
+#include "mu-core/Functors.h"
+#include "mu-core/Metaprogramming.h"
 
 // Prototype of a forward range:
 //	template<typename T>
@@ -84,6 +85,7 @@ namespace mu {
 
 	public:
 		static constexpr bool HasSize = true;
+		static constexpr bool IsContiguous = true;
 
 		template<class U>
 		friend class PointerRange;
@@ -167,7 +169,7 @@ namespace mu {
 			return FMap<details::RangeFront>(m_ranges);
 		}
 
-		template<typename T = ZipRange, typename std::enable_if<T::HasSize, int>::type = 0>
+		template<typename T = ZipRange, EnableIf<T::HasSize>...>
 		size_t Size() const {
 			return Fold<details::RangeMinSizeFolder>(
 				std::numeric_limits<size_t>::max(), m_ranges);
@@ -190,7 +192,7 @@ namespace mu {
 		auto Front() { return m_func(m_range.Front()); }
 		void Advance() { m_range.Advance(); }
 
-		template<typename T = IN_RANGE, typename = std::enable_if_t<T::HasSize>>
+		template<typename T = IN_RANGE, EnableIf<T::HasSize>...>
 		size_t Size() const { return m_range.Size(); }
 
 		TransformRange MakeEmpty() const { return TransformRange{ m_range.MakeEmpty(), m_func }; }
@@ -254,13 +256,13 @@ namespace mu {
 		// Functor for folding over ranges of finite/infinite size and picking the minimum size
 		template<typename RANGE>
 		struct RangeMinSizeFolder {
-			template<typename T = RANGE, typename std::enable_if<T::HasSize, int>::type = 0>
+			template<typename T = RANGE, EnableIf<T::HasSize>...>
 			size_t operator()(size_t s, const RANGE& r) const {
 				size_t rs = r.Size();
 				return rs < s ? rs : s;
 			}
 
-			template<typename T = RANGE, typename std::enable_if<!T::HasSize, int>::type = 0>
+			template<typename T = RANGE, DisableIf<T::HasSize>...>
 			size_t operator()(size_t s, const RANGE&) const {
 				return s;
 			}

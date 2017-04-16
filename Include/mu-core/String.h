@@ -3,8 +3,10 @@
 #include "mu-core/Array.h"
 #include "mu-core/Ranges.h"
 #include "mu-core/StringFormat.h"
+#include "mu-core/MetaProgramming.h"
 
 #include <array>
+
 
 namespace mu {
 // #TODO: Encoding is a template parameter so conversions can be done automatically
@@ -27,22 +29,16 @@ namespace mu {
 			m_data.Add('\0');
 		}
 
-		String_T(const Array<CharType>& str) {
-			m_data.Append(str);
-			if (m_data[m_data.Num() - 1] != '\0') {
-				m_data.Add('\0');
-			}
-		}
-
 		template<typename OtherChar, typename SizeType>
 		String_T(std::tuple<OtherChar*, SizeType> t) {
 			const auto* str = std::get<0>(t);
 			auto len = std::get<1>(t);
-			m_data.Reserve(len + 1);
-			for (CharType c : mu::Range(str, len)) {
-				m_data.Add(c);
+			AppendRange(Range(str, str + len));
 			}
-			m_data.Add('\0');
+
+		template<typename... RANGES>
+		explicit String_T(RANGES&&... rs) {
+			AppendRanges(Range(std::forward<RANGES>(rs))...);
 		}
 
 		bool IsEmpty() const { return m_data.Num() <= 1; }
@@ -71,34 +67,40 @@ namespace mu {
 			m_data.Add('\0');
 		}
 		void Append(const CharType* c) {
-			if (m_data.Num() > 0) {
-				m_data.RemoveAt(m_data.Num() - 1);
-			}
+			RemoveTrailingNull();
 			for (; *c != '\0'; ++c) {
 				m_data.Add(*c);
 			}
 			m_data.Add('\0');
 		}
 		void Append(const String_T& s) {
-			if (m_data.Num() > 0) {
-				m_data.RemoveAt(m_data.Num() - 1);
-			}
-			m_data.Append(s.GetData());
+			RemoveTrailingNull();
+			m_data.Append(s.m_data);
 		}
 
-		template<typename RANGE, typename std::enable_if<!RANGE::HasSize, int>::type = 0>
-		void Append(RANGE&& r) {
+		template<typename RANGE, DisableIf<RANGE::HasSize>...>
+		void AppendRange(RANGE r) {
+			RemoveTrailingNull();
 			for (; !r.IsEmpty(); r.Advance()) {
-				Add(r.Front());
+				m_data.Add(r.Front());
 			}
+			AddTrailingNull();
 		}
 
-		template<typename RANGE, typename std::enable_if<RANGE::HasSize, int>::type = 0>
-		void Append(RANGE&& r) {
+		template<typename RANGE, EnableIf<RANGE::HasSize>...>
+		void AppendRange(RANGE r) {
+			RemoveTrailingNull();
 			m_data.Reserve(r.Size());
 			for (; !r.IsEmpty(); r.Advance()) {
-				Add(r.Front());
+				m_data.Add(r.Front());
 			}
+			AddTrailingNull();
+			}
+
+		template<typename RANGE, typename... RANGES>
+		void AppendRanges(RANGE r, RANGES... rs) {
+			AppendRange(r);
+			AppendRanges(rs...);
 		}
 
 
@@ -119,6 +121,19 @@ namespace mu {
 			}
 			return Compare(other.GetRaw()) == 0;
 		}
+	private:
+		void AppendRanges() {
+		}
+		void RemoveTrailingNull() {
+			if (m_data.Num() > 0) {
+				m_data.RemoveAt(m_data.Num() - 1);
+			}
+		}
+		void AddTrailingNull() {
+			if (m_data.Num() > 0 && m_data[m_data.Num()-1] != 0) {
+				m_data.Add(0);
+			}
+		}
 	};
 
 	// UTF-8 string
@@ -128,11 +143,11 @@ namespace mu {
 
 	template<typename CharType>
 	PointerRange<const CharType> Range(const String_T<CharType>& s) {
-		return Range(s.GetRaw(), s.GetLength()-1);
+		return Range(s.GetRaw(), s.GetLength());
 	}
 	template<typename CharType>
 	PointerRange<const CharType> Range(String_T<CharType>& s) {
-		return Range(s.GetRaw(), s.GetLength()-1);
+		return Range(s.GetRaw(), s.GetLength());
 	}
 
 	template<typename... ARGS>

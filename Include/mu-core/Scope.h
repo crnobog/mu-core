@@ -61,26 +61,20 @@ namespace mu
 {
 	namespace details
 	{
-		template<typename DERIVED, typename R, typename = void>
-		class unique_resource_arrow_support {};
-
 		template<typename DERIVED, typename R>
-		class unique_resource_arrow_support<DERIVED, R, typename std::enable_if<std::is_pointer<R>::value>::type>
+		class unique_resource_arrow_support
 		{
+			template<typename U=R, EnableIf<std::is_pointer<U>::value>...>
 			R operator->() const
 			{
 				return static_cast<const DERIVED*>(this)->get();
 			}
 		};
 
-		template<typename DERIVED, typename R, typename = void>
+		template<typename DERIVED, typename R>
 		class unique_resource_star_support
 		{
-		};
-
-		template<typename DERIVED, typename R>
-		class unique_resource_star_support<DERIVED, R, typename std::enable_if_t<std::is_pointer<R>::value, void*>>
-		{
+			template<typename U = R, EnableIf<std::is_pointer<U>::value>...>
 			std::add_lvalue_reference_t<std::remove_pointer_t<R>> operator*() const noexcept
 			{
 				return *(static_cast<const DERIVED*>(this)->get());
