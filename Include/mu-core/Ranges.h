@@ -1,11 +1,16 @@
 #pragma once
 
-#include <tuple>
-#include <limits>
-#include <memory>
-
 #include "mu-core/Functors.h"
 #include "mu-core/Metaprogramming.h"
+
+#include "mu-core/IotaRange.h"
+#include "mu-core/PointerRange.h"
+#include "mu-core/TransformRange.h"
+#include "mu-core/ZipRange.h"
+
+#include "mu-core/RangeIteration.h"
+
+#include <tuple>
 
 // Prototype of a forward range:
 //	template<typename T>
@@ -83,215 +88,6 @@ namespace mu {
 			std::forward<std::decay<FUNC>::type>(f));
 	}
 
-	using mu::functor::Fold;
-	using mu::functor::FoldOr;
-	using mu::functor::FMap;
-	using mu::functor::FMapVoid;
-
-	namespace details {
-		template<typename T> struct WithBeginEnd;
-	}
-
-	// A linear forward range over raw memory of a certain type
-	template<typename T>
-	class PointerRange : public details::WithBeginEnd<PointerRange<T>> {
-		T* m_start, *m_end;
-
-	public:
-		static constexpr bool HasSize = true;
-		static constexpr bool IsContiguous = true;
-
-		template<class U>
-		friend class PointerRange;
-
-		PointerRange()
-			: m_start(nullptr)
-			, m_end(nullptr) {}
-
-		PointerRange(T* start, T* end)
-			: m_start(start)
-			, m_end(end) {}
-
-		template<typename U>
-		PointerRange(PointerRange<U> other) {
-			m_start = other.m_start;
-			m_end = other.m_end;
-		}
-
-		void Advance() { ++m_start; }
-		void AdvanceBy(size_t num) { m_start += num; }
-
-		bool IsEmpty() const { return m_start >= m_end; }
-		T& Front() { return *m_start; }
-		const T& Front() const { return *m_start; }
-		size_t Size() const { return m_end - m_start; }
-
-		template<typename U>
-		bool operator==(const PointerRange<U>& other) const {
-			return m_start == other.m_start
-				&& m_end == other.m_end;
-		}
-
-		template<typename U>
-		bool operator!=(const PointerRange<U>& other) const {
-			return m_start != other.m_start
-				|| m_end != other.m_end;
-		}
-
-		PointerRange MakeEmpty() const { return PointerRange{ nullptr, nullptr }; }
-	};
-
-	// A linear infinite range over an integral type
-	template<typename T>
-	class IotaRange {
-		T m_it = 0;
-	public:
-		enum { HasSize = 0 };
-
-		IotaRange(T start = 0) : m_it(start) {}
-
-		void Advance() { ++m_it; }
-		bool IsEmpty() const { return false; }
-		T Front() { return m_it; }
-	};
-
-	// ZipRange combines multiple ranges and iterates them in lockstep
-	template<typename... RANGES>
-	class ZipRange : public details::WithBeginEnd<ZipRange<RANGES...>> {
-		std::tuple<RANGES...> m_ranges;
-		
-	public:
-		static constexpr bool HasSize = FoldOr(RANGES::HasSize...);
-
-		ZipRange(RANGES... ranges) : m_ranges(ranges...) {}
-
-		bool IsEmpty() const {
-			return FoldOr(FMap<details::RangeIsEmpty>(m_ranges));
-		}
-
-		void Advance() {
-			FMapVoid<details::RangeAdvance>(m_ranges);
-		}
-
-		auto Front() {
-			return FMap<details::RangeFront>(m_ranges);
-		}
-
-		template<typename T = ZipRange, EnableIf<T::HasSize>...>
-		size_t Size() const {
-			return Fold<details::RangeMinSizeFolder>(
-				std::numeric_limits<size_t>::max(), m_ranges);
-		}
-	};
-
-	template<typename IN_RANGE, typename FUNC>
-	class TransformRange : public details::WithBeginEnd<TransformRange<IN_RANGE, FUNC>> {
-		IN_RANGE m_range;
-		FUNC m_func;
-	public:
-		static constexpr bool HasSize = IN_RANGE::HasSize;
-
-		TransformRange(IN_RANGE r, FUNC f)
-			: m_range(std::move(r)), m_func(std::move(f)) {}
-
-		bool IsEmpty() const { return m_range.IsEmpty(); }
-		auto Front() { return m_func(m_range.Front()); }
-		void Advance() { m_range.Advance(); }
-
-		template<typename T = IN_RANGE, EnableIf<T::HasSize>...>
-		size_t Size() const { return m_range.Size(); }
-	};
-
-
-	template<typename ELEMENT>
-	class ForwardRange {
-		struct WrapperBase {
-			virtual bool IsEmpty() = 0;
-			virtual void Advance() = 0;
-			virtual ELEMENT Front() = 0;
-		};
-
-		template<typename RANGE>
-		class Wrapper : public WrapperBase {
-			RANGE m_range;
-		public:
-			Wrapper(RANGE in_r)
-				: m_range(std::move(in_r)) {}
-
-			virtual bool IsEmpty() { return m_range.IsEmpty(); }
-			virtual void Advance() { m_range.Advance(); }
-			virtual ELEMENT Front() { return m_range.Front(); }
-		};
-
-		std::unique_ptr<WrapperBase> m_wrapper;
-	public:
-
-		template<typename RANGE>
-		ForwardRange(RANGE&& in_r) {
-			m_wrapper = std::make_unique<Wrapper<RANGE>>(std::forward<RANGE>(in_r));
-		}
-
-		bool IsEmpty() { return m_wrapper->IsEmpty(); }
-		void Advance() { m_wrapper->Advance(); }
-		ELEMENT Front() { return m_wrapper->Front(); }
-	};
-
-	namespace details {
-		template<typename RANGE>
-		using RangeFrontType = decltype(std::declval<RANGE>().Front());
-
-		// Adaptor for using ranges in begin-end based range-based for loops
-		struct RangeSentinel {};
-
-		template<typename RANGE>
-		struct RangeIterator {
-			RANGE m_range;
-
-			RangeIterator(RANGE r) : m_range(std::move(r)) {}
-
-			void operator++() { m_range.Advance(); }
-			RangeFrontType<RANGE> operator*() { return m_range.Front(); }
-			bool operator!=(const RangeSentinel&) { return !m_range.IsEmpty(); }
-		};
-
-		// TODO: Should be able to make this use a sentinal type for end() with VS2017
-		template<typename RANGE>
-		struct WithBeginEnd {
-			auto begin() const { return RangeIterator<RANGE>{ *static_cast<const RANGE*>(this) }; }
-			auto end() const { return RangeSentinel{ }; }
-		};
-
-		// Helpers for calling members in variadic template expansion
-		template<typename RANGE>
-		struct RangeIsEmpty { bool operator()(const RANGE& r) { return r.IsEmpty(); } };
-
-		template<typename RANGE>
-		struct RangeAdvance { void operator()(RANGE& r) { r.Advance(); } };
-
-		template<typename RANGE>
-		struct RangeFront {
-			auto operator()(RANGE& r) -> decltype(r.Front()) {
-				return r.Front();
-			}
-		};
-
-		// Functor for folding over ranges of finite/infinite size and picking the minimum size
-		template<typename RANGE>
-		struct RangeMinSizeFolder {
-			template<typename T = RANGE, EnableIf<T::HasSize>...>
-			size_t operator()(size_t s, const RANGE& r) const {
-				size_t rs = r.Size();
-				return rs < s ? rs : s;
-			}
-
-			template<typename T = RANGE, DisableIf<T::HasSize>...>
-			size_t operator()(size_t s, const RANGE&) const {
-				return s;
-			}
-		};
-
-	}
-
 	template<typename R>
 	auto MakeRangeIterator(R&& r) {
 		typedef std::decay<R>::type RANGE_TYPE;
@@ -300,11 +96,5 @@ namespace mu {
 
 	inline auto MakeRangeSentinel() {
 		return details::RangeSentinel{};
-	}
-
-	template<typename RANGE>
-	auto WrapRange(RANGE&& in_r) {
-		typedef decltype(Range(in_r).Front()) ElementType;
-		return ForwardRange<ElementType>(Range(std::forward<RANGE>(in_r)));
 	}
 }

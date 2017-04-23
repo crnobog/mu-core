@@ -1,5 +1,6 @@
 #include "CppUnitTest.h"
 #include "mu-core/Ranges.h"
+#include "mu-core/RangeWrappers.h"
 #include "mu-core/Algorithms.h"
 
 #include <memory>
