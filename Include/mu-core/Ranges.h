@@ -131,15 +131,21 @@ namespace mu {
 	template<typename T>
 	class IotaRange {
 		T m_it = 0;
+		bool m_empty = false;
 	public:
 		enum { HasSize = 0 };
 
-		IotaRange() {}
 		IotaRange(T start = 0) : m_it(start) {}
 
 		void Advance() { ++m_it; }
-		bool IsEmpty() const { return false; }
+		bool IsEmpty() const { return m_empty; }
 		T Front() { return m_it; }
+
+		IotaRange MakeEmpty() const {
+			IotaRange<T> i; 
+			i.m_empty = true;
+			return i;
+		}
 	};
 
 	// ZipRange combines multiple ranges and iterates them in lockstep
@@ -233,6 +239,7 @@ namespace mu {
 	};
 
 	namespace details {
+		// TODO: Should be able to make this use a sentinal type for end() with VS2017
 		template<typename RANGE>
 		struct WithBeginEnd {
 			auto begin() const { return RangeIterator<RANGE>{ *static_cast<const RANGE*>(this)}; }
