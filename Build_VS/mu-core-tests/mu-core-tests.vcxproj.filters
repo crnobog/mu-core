@@ -27,6 +27,9 @@
     <ClCompile Include="..\..\Source\Tests_Paths.cpp">
       <Filter>Source</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\Tests_FixedArray.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Include\mu-core\Functors.h">
@@ -78,6 +81,9 @@
       <Filter>Include</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Include\mu-core\Vectors.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Include\mu-core\FixedArray.h">
       <Filter>Include</Filter>
     </ClInclude>
   </ItemGroup>

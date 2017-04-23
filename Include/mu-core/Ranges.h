@@ -22,7 +22,11 @@
 template<typename T>
 class Array;
 
+
 namespace mu {
+	template<typename T, size_t MAX>
+	class FixedArray;
+
 	// Functions to automatically construct ranges from pointers/arrays
 	template<typename T>
 	auto Range(T* ptr, size_t num) {
@@ -46,6 +50,16 @@ namespace mu {
 
 	template<typename T>
 	auto Range(const Array<T>& arr) {
+		return Range(arr.Data(), arr.Num());
+	}
+
+	template<typename T, size_t MAX>
+	auto Range(FixedArray<T, MAX>& arr) {
+		return Range(arr.Data(), arr.Num());
+	}
+
+	template<typename T, size_t MAX>
+	auto Range(const FixedArray<T, MAX>& arr) {
 		return Range(arr.Data(), arr.Num());
 	}
 
