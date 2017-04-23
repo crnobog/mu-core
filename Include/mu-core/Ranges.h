@@ -284,6 +284,10 @@ namespace mu {
 		return details::RangeIterator<RANGE_TYPE>(std::forward<RANGE_TYPE>(r));
 	}
 
+	inline auto MakeRangeSentinel() {
+		return details::RangeSentinel{};
+	}
+
 	template<typename RANGE>
 	auto WrapRange(RANGE&& in_r) {
 		typedef decltype(Range(in_r).Front()) ElementType;

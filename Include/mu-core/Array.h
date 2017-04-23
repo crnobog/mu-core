@@ -211,10 +211,10 @@ public:
 	}
 
 	auto begin() { return mu::MakeRangeIterator(mu::Range(m_data, m_num)); }
-	auto end() { return mu::MakeRangeIterator(mu::Range((T*)nullptr, 0)); }
+	auto end() { return mu::MakeRangeSentinel(); }
 
 	auto begin() const { return mu::MakeRangeIterator(mu::Range(m_data, m_num)); }
-	auto end() const { return mu::MakeRangeIterator(mu::Range((T*)nullptr, 0)); }
+	auto end() const { return mu::MakeRangeSentinel(); }
 
 private:
 	void InitEmpty(size_t num) {
