@@ -148,6 +148,9 @@ mu::PointerRange<uint8_t>  FileReader::Read(mu::PointerRange<uint8_t> dest_range
 			throw std::runtime_error("ReadFile failed");
 		}
 		dest_range.AdvanceBy(bytes_read);
+		if (bytes_read == 0) {
+			break;
+		}
 	}
 	return dest_range;
 }
@@ -159,10 +162,12 @@ int64_t FileReader::GetFileSize() const {
 }
 
 
-Array<uint8_t> LoadFileToArray(const char* path) {
+Array<u8> LoadFileToArray(const char* path, FileReadType type) {
 	FileReader reader = FileReader::Open(path);
-	auto arr = Array<uint8_t>::MakeUninitialized(reader.GetFileSize());
+	size_t extra = type == FileReadType::Text ? 1 : 0;
+	auto arr = Array<u8>::MakeUninitialized(reader.GetFileSize() + extra);
 	reader.Read(mu::Range(arr));
+	arr[arr.Num() - 1] = 0;
 	return std::move(arr);
 }
 
