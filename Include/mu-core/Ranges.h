@@ -33,20 +33,6 @@ namespace mu {
 	class FixedArray;
 
 	// Functions to automatically construct ranges from pointers/arrays
-	template<typename T>
-	auto Range(T* ptr, size_t num) {
-		return Range(ptr, ptr + num);
-	}
-
-	template<typename T>
-	auto Range(T* start, T* end) {
-		return PointerRange<T>(start, end);
-	}
-
-	template<typename T, size_t SIZE>
-	auto Range(T(&arr)[SIZE]) {
-		return Range(arr, arr + SIZE);
-	}
 
 	template<typename T>
 	auto Range(Array<T>& arr) {

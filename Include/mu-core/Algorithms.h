@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Ranges.h"
+
 // Common algorithms operating on ranges
 namespace mu {
 	// Move assign elements from the source to the destination

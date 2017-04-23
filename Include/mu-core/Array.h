@@ -2,7 +2,7 @@
 
 #include <initializer_list>
 
-#include "mu-core/Ranges.h"
+#include "mu-core/PointerRange.h"
 #include "mu-core/Algorithms.h"
 
 template<typename T>
@@ -170,7 +170,7 @@ public:
 
 	template<typename RANGE>
 	void Append(RANGE&& r) {
-		for (auto&& item : mu::Range(r)) {
+		for (auto&& item : r) {
 			Add(std::forward<decltype(item)>(item));
 		}
 	}

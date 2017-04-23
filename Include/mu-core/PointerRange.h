@@ -51,4 +51,19 @@ namespace mu {
 
 		PointerRange MakeEmpty() const { return PointerRange{ nullptr, nullptr }; }
 	};
+
+	template<typename T>
+	auto Range(T* ptr, size_t num) {
+		return Range(ptr, ptr + num);
+	}
+
+	template<typename T>
+	auto Range(T* start, T* end) {
+		return PointerRange<T>(start, end);
+	}
+
+	template<typename T, size_t SIZE>
+	auto Range(T(&arr)[SIZE]) {
+		return Range(arr, arr + SIZE);
+	}
 }
