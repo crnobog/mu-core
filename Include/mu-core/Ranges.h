@@ -131,33 +131,21 @@ namespace mu {
 	template<typename T>
 	class IotaRange {
 		T m_it = 0;
-		bool m_empty = false;
 	public:
 		enum { HasSize = 0 };
 
 		IotaRange(T start = 0) : m_it(start) {}
 
 		void Advance() { ++m_it; }
-		bool IsEmpty() const { return m_empty; }
+		bool IsEmpty() const { return false; }
 		T Front() { return m_it; }
-
-		IotaRange MakeEmpty() const {
-			IotaRange<T> i; 
-			i.m_empty = true;
-			return i;
-		}
 	};
 
 	// ZipRange combines multiple ranges and iterates them in lockstep
 	template<typename... RANGES>
 	class ZipRange : public details::WithBeginEnd<ZipRange<RANGES...>> {
 		std::tuple<RANGES...> m_ranges;
-
-		template<size_t... INDICES>
-		ZipRange MakeEmpty(std::index_sequence<INDICES...>) const {
-			return ZipRange{ std::get<INDICES>(m_ranges).MakeEmpty()... };
-		}
-
+		
 	public:
 		static constexpr bool HasSize = FoldOr(RANGES::HasSize...);
 
@@ -180,8 +168,6 @@ namespace mu {
 			return Fold<details::RangeMinSizeFolder>(
 				std::numeric_limits<size_t>::max(), m_ranges);
 		}
-
-		ZipRange MakeEmpty() const { return MakeEmpty(mu::functor::details::TupleIndices<decltype(m_ranges)>()); }
 	};
 
 	template<typename IN_RANGE, typename FUNC>
@@ -200,8 +186,6 @@ namespace mu {
 
 		template<typename T = IN_RANGE, EnableIf<T::HasSize>...>
 		size_t Size() const { return m_range.Size(); }
-
-		TransformRange MakeEmpty() const { return TransformRange{ m_range.MakeEmpty(), m_func }; }
 	};
 
 
@@ -239,11 +223,28 @@ namespace mu {
 	};
 
 	namespace details {
+		template<typename RANGE>
+		using RangeFrontType = decltype(std::declval<RANGE>().Front());
+
+		// Adaptor for using ranges in begin-end based range-based for loops
+		struct RangeSentinel {};
+
+		template<typename RANGE>
+		struct RangeIterator {
+			RANGE m_range;
+
+			RangeIterator(RANGE r) : m_range(std::move(r)) {}
+
+			void operator++() { m_range.Advance(); }
+			RangeFrontType<RANGE> operator*() { return m_range.Front(); }
+			bool operator!=(const RangeSentinel&) { return !m_range.IsEmpty(); }
+		};
+
 		// TODO: Should be able to make this use a sentinal type for end() with VS2017
 		template<typename RANGE>
 		struct WithBeginEnd {
-			auto begin() const { return RangeIterator<RANGE>{ *static_cast<const RANGE*>(this)}; }
-			auto end() const { return RangeIterator<RANGE>{ static_cast<const RANGE*>(this)->MakeEmpty() }; }
+			auto begin() const { return RangeIterator<RANGE>{ *static_cast<const RANGE*>(this) }; }
+			auto end() const { return RangeSentinel{ }; }
 		};
 
 		// Helpers for calling members in variadic template expansion
@@ -275,20 +276,6 @@ namespace mu {
 			}
 		};
 
-		template<typename RANGE>
-		using RangeFrontType = decltype(std::declval<RANGE>().Front());
-
-		// Adaptor for using ranges in begin-end based range-based for loops
-		template<typename RANGE>
-		struct RangeIterator {
-			RANGE m_range;
-
-			RangeIterator(RANGE r) : m_range(std::move(r)) {}
-
-			void operator++() { m_range.Advance(); }
-			RangeFrontType<RANGE> operator*() { return m_range.Front(); }
-			bool operator!=(const RangeIterator&) { return !m_range.IsEmpty(); }
-		};
 	}
 
 	template<typename R>

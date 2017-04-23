@@ -1,10 +1,9 @@
 #pragma once
 
 #include <initializer_list>
-#include <cstdint>
 
-#include "Ranges.h"
-#include "Algorithms.h"
+#include "mu-core/Ranges.h"
+#include "mu-core/Algorithms.h"
 
 template<typename T>
 class ArrayView;
@@ -171,7 +170,7 @@ public:
 
 	template<typename RANGE>
 	void Append(RANGE&& r) {
-		for (auto&& item : r) {
+		for (auto&& item : mu::Range(r)) {
 			Add(std::forward<decltype(item)>(item));
 		}
 	}
