@@ -27,6 +27,27 @@ namespace mu {
 		return dest;
 	}
 
+	template<typename DEST_RANGE, typename SOURCE_RANGE>
+	auto Copy(DEST_RANGE&& in_dest, SOURCE_RANGE&& in_source) {
+		auto dest = Range(std::forward<DEST_RANGE>(in_dest));
+		auto source = Range(std::forward<SOURCE_RANGE>(in_source));
+		for (; !dest.IsEmpty() && !source.IsEmpty(); dest.Advance(), source.Advance()) {
+			dest.Front() = source.Front(); // TODO: Should I forward here?
+		}
+		return dest;
+	}
+
+	template<typename DEST_RANGE, typename SOURCE_RANGE>
+	auto CopyConstruct(DEST_RANGE&& in_dest, SOURCE_RANGE&& in_source) {
+		auto dest = Range(std::forward<DEST_RANGE>(in_dest));
+		auto source = Range(std::forward<DEST_RANGE>(in_source));
+		typedef std::remove_reference<decltype(dest.Front())>::type ELEMENT_TYPE;
+		for (; !dest.IsEmpty() && !source.IsEmpty(); dest.Advance(), source.Advance()) {
+			new(&dest.Front()) ELEMENT_TYPE(source.Front()); // TODO: Should I forward here?
+		}
+		return dest;
+	}
+
 	template<typename RANGE, typename FUNC>
 	auto Map(RANGE&& in_r, FUNC&& f) {
 		for (auto&& r = Range(std::forward<RANGE>(in_r));
