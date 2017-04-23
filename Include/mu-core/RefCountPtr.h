@@ -42,6 +42,7 @@ public:
 	RefCountPtr& operator=(RefCountPtr&& other) {
 		Clear();
 		m_ptr = other.Steal();
+		return *this;
 	}
 
 	OBJECT* Steal() {
