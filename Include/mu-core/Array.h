@@ -21,7 +21,7 @@ public:
 	Array(std::initializer_list<T> init) {
 		InitEmpty(init.size());
 		for (auto&& item : init) {
-			AddSafe(item);
+			new(&AddSafe()) T(item);
 		}
 	}
 
@@ -97,12 +97,21 @@ public:
 
 	size_t Add(const T& item) {
 		EnsureSpace(m_num + 1);
-		return AddSafe(item);
+		new(&AddSafe()) T(item);
+		return m_num - 1;
 	}
 
 	size_t Add(T&& item) {
 		EnsureSpace(m_num + 1);
 		return EmplaceSafe(std::forward<T>(item));
+	}
+
+	void AddZeroed(size_t count) {
+		EnsureSpace(m_num + count);
+		for (size_t i = 0; i < count; ++i) {
+			T& item = AddSafe();
+			memset(&item, 0, sizeof(T));
+		}
 	}
 
 	void AddUnique(const T& item) {
@@ -192,6 +201,7 @@ public:
 	size_t Max() const { return m_max; }
 	bool IsEmpty() const { return m_num == 0; }
 
+	// TODO: Remove in favour of algorithms?
 	bool Contains(const T& item) const {
 		for (const T& t : *this) {
 			if (t == item) {
@@ -229,9 +239,9 @@ private:
 		m_max = new_size;
 	}
 
-	size_t AddSafe(const T& item) {
-		new(m_data + m_num) T(item);
-		return m_num++;
+	T& AddSafe() {
+		T* item = m_data + m_num++;
+		return *item;
 	}
 
 	size_t EmplaceSafe(T&& item) {
