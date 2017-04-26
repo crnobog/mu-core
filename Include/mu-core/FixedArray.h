@@ -1,6 +1,7 @@
 #pragma once
 
 #include "mu-core/Ranges.h"
+#include "mu-core/Algorithms.h"
 
 namespace mu {
 	template<typename T, size_t MAX>
@@ -11,6 +12,9 @@ namespace mu {
 
 	public:
 		FixedArray() {}
+		~FixedArray() {
+			Destroy(Range(*this));
+		}
 
 		size_t Num() const { return m_num; }
 		T* Data() { return (T*)m_data; }

@@ -2,9 +2,12 @@
 
 #include "Ranges.h"
 
+// TODO: Consider argument types. Should I be passing by value mostly here?
+
 // Common algorithms operating on ranges
 namespace mu {
 	// Move assign elements from the source to the destination
+	// Returns the remaining range in the destination after consuming the source.
 	template<typename DEST_RANGE, typename SOURCE_RANGE>
 	auto Move(DEST_RANGE&& in_dest, SOURCE_RANGE&& in_source) {
 		auto dest = Range(std::forward<DEST_RANGE>(in_dest));
@@ -18,6 +21,7 @@ namespace mu {
 	// Move CONSTRUCT elements from the source into the destination.
 	// Assumes the destination is uninitialized or otherwise does not 
 	//	require destructors/assignment operators to be called.
+	// Returns the remaining range in the destination after consuming the source.
 	template<typename DEST_RANGE, typename SOURCE_RANGE>
 	auto MoveConstruct(DEST_RANGE&& in_dest, SOURCE_RANGE&& in_source) {
 		auto dest = Range(std::forward<DEST_RANGE>(in_dest));
@@ -29,6 +33,8 @@ namespace mu {
 		return dest;
 	}
 
+	// Copy assign elements from the source into the destination
+	// Returns the remaining range in the destination after consuming the source.
 	template<typename DEST_RANGE, typename SOURCE_RANGE>
 	auto Copy(DEST_RANGE&& in_dest, SOURCE_RANGE&& in_source) {
 		auto dest = Range(std::forward<DEST_RANGE>(in_dest));
@@ -39,6 +45,10 @@ namespace mu {
 		return dest;
 	}
 
+	// Copy CONSTRUCT elements from the source into the destination.
+	// Assumes the destination is uninitialized or otherwise does not 
+	//	require destructors/assignment operators to be called.
+	// Returns the remaining range in the destination after consuming the source.
 	template<typename DEST_RANGE, typename SOURCE_RANGE>
 	auto CopyConstruct(DEST_RANGE&& in_dest, SOURCE_RANGE&& in_source) {
 		auto dest = Range(std::forward<DEST_RANGE>(in_dest));
@@ -50,6 +60,8 @@ namespace mu {
 		return dest;
 	}
 
+	// Executes f for every element in the input range
+	// If the range returns values by reference they can be modified.
 	template<typename RANGE, typename FUNC>
 	auto Map(RANGE&& in_r, FUNC&& f) {
 		for (auto&& r = Range(std::forward<RANGE>(in_r));
@@ -58,6 +70,8 @@ namespace mu {
 		}
 	}
 
+	// Finds the first element in the range which satisfies the predicate f
+	// Returns a copy of the range advanced to the matching element or an empty range
 	template<typename RANGE, typename FUNC>
 	auto Find(RANGE&& in_r, FUNC&& f) {
 		auto&& r = Range(std::forward<RANGE>(in_r));
@@ -69,6 +83,9 @@ namespace mu {
 		return r;
 	}
 
+	// Finds the next element in the range which satisfies the predicate f 
+	//  - ignores the first element of the range to allow for iterated search
+	// Returns a copy of the range advanced to the matching element or an empty range
 	template<typename RANGE, typename FUNC>
 	auto FindNext(RANGE&& in_r, FUNC&& f) {
 		if (in_r.IsEmpty()) { return in_r; }
@@ -83,6 +100,8 @@ namespace mu {
 		return r;
 	}
 
+	// Finds the LAST element in the range which satisfies the predicate f
+	// Returns a copy of the range advanced to the matching element or an empty range
 	template<typename RANGE, typename FUNC>
 	auto FindLast(RANGE&& in_r, FUNC&& f) {
 		auto r = Find(in_r, f);
@@ -98,6 +117,7 @@ namespace mu {
 		}
 	}
 
+	// Returns true of the range contains an element satisfying the predicate
 	template<typename RANGE, typename FUNC>
 	bool Contains(RANGE&& in_r, FUNC&& f) {
 		return !Find(std::forward<RANGE>(in_r), std::forward<FUNC>(f) ).IsEmpty();
@@ -123,6 +143,15 @@ namespace mu {
 
 		for (auto& item : r) {
 			item = ITEM_TYPE(std::forward<ARGS>(args)...);
+		}
+	}
+
+
+	template<typename RANGE>
+	void Destroy(RANGE r) {
+		typedef std::decay<decltype(r.Front())>::type ITEM_TYPE;
+		for (auto& item : r) {
+			item.~ITEM_TYPE();
 		}
 	}
 }
