@@ -5,16 +5,33 @@
 
 namespace mu {
 	template<typename T, size_t MAX>
-	class FixedArray {
+	class FixedArrayBase {
+	protected:
 		static constexpr size_t DataSize = sizeof(T) * MAX;
 		u8 m_data[DataSize];
 		size_t m_num = 0;
+	};
+
+	template<typename T, size_t MAX, bool TRIVIAL_DESTRUCTOR>
+	class FixedArrayDestructorMixin : public FixedArrayBase<T, MAX> {
+	};
+
+	template<typename T, size_t MAX>
+	class FixedArrayDestructorMixin<T, MAX, false> : public FixedArrayBase<T, MAX> {
+	protected:
+		~FixedArrayDestructorMixin() {
+			T* start = (T*)m_data;
+			T* end = start + m_num;
+			Destroy(Range(start, end));
+		}
+	};
+
+	template<typename T, size_t MAX>
+	class FixedArray : protected FixedArrayDestructorMixin<T, MAX, std::is_trivially_destructible_v<T>> {
 
 	public:
 		FixedArray() {}
-		~FixedArray() {
-			Destroy(Range(*this));
-		}
+
 
 		size_t Num() const { return m_num; }
 		T* Data() { return (T*)m_data; }

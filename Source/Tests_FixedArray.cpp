@@ -53,8 +53,16 @@ public:
 			ResetElementCounts();
 		}
 
+		TEST_METHOD(NoDestructor) {
+			FixedArray<EmptyElement, 10> arr;
+
+			static_assert(std::is_trivially_destructible_v<EmptyElement> == true, "EmptyElement is not trivially destructible");
+			static_assert(std::is_trivially_destructible_v<decltype(arr)> == true, "FixedArray<EmptyElement> is not trivially destructible");
+		}
 		TEST_METHOD(Empty) {
 			FixedArray<Element, 10> arr;
+
+			static_assert(std::is_trivially_destructible_v<decltype(arr)> == false, "FixedArray<Element> is trivially destructible");
 
 			Assert::AreEqual(0, ElementConstructorCount);
 			Assert::AreEqual(0, ElementDestructorCount);
