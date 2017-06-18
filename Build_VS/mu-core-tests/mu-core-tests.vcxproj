@@ -22,14 +22,17 @@
     <ClCompile Include="..\..\Source\mu-core.cpp" />
     <ClCompile Include="..\..\Source\Tests_Algorithms.cpp" />
     <ClCompile Include="..\..\Source\Tests_Array.cpp" />
+    <ClCompile Include="..\..\Source\Tests_BitArray.cpp" />
     <ClCompile Include="..\..\Source\Tests_FixedArray.cpp" />
     <ClCompile Include="..\..\Source\Tests_Paths.cpp" />
+    <ClCompile Include="..\..\Source\Tests_Pool.cpp" />
     <ClCompile Include="..\..\Source\Tests_Ranges.cpp" />
     <ClCompile Include="..\..\Source\Tests_String.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Include\mu-core\Algorithms.h" />
     <ClInclude Include="..\..\Include\mu-core\Array.h" />
+    <ClInclude Include="..\..\Include\mu-core\BitArray.h" />
     <ClInclude Include="..\..\Include\mu-core\Debug.h" />
     <ClInclude Include="..\..\Include\mu-core\FileReader.h" />
     <ClInclude Include="..\..\Include\mu-core\FixedArray.h" />

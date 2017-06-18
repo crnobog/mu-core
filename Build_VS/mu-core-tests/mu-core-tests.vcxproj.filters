@@ -30,6 +30,12 @@
     <ClCompile Include="..\..\Source\Tests_FixedArray.cpp">
       <Filter>Source</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\Tests_Pool.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Tests_BitArray.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Include\mu-core\Functors.h">
@@ -84,6 +90,9 @@
       <Filter>Include</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Include\mu-core\FixedArray.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Include\mu-core\BitArray.h">
       <Filter>Include</Filter>
     </ClInclude>
   </ItemGroup>
