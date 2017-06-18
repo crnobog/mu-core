@@ -24,11 +24,10 @@
 //		size_t Size(); // if HasSize == 1
 //	};
 
-template<typename T>
-class Array;
-
-
 namespace mu {
+	template<typename T>
+	class Array;
+
 	template<typename T, size_t MAX>
 	class FixedArray;
 

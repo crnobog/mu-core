@@ -8,7 +8,7 @@ enum class FileReadType {
 	Binary,
 };
 
-Array<uint8_t> LoadFileToArray(const char* path, FileReadType type);
+mu::Array<uint8_t> LoadFileToArray(const char* path, FileReadType type);
 
 class FileReader
 {

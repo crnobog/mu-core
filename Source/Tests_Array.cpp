@@ -3,8 +3,9 @@
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
-namespace mu_core_tests_array
-{
+namespace mu_core_tests_array {
+	using namespace mu;
+
 	static int ConstructCount = 0;
 	static int DestructCount = 0;
 	static int CopyCount = 0;
