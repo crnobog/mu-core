@@ -103,12 +103,15 @@ namespace mu {
 			return EmplaceSafe(std::forward<T>(item));
 		}
 
-		void AddZeroed(size_t count) {
+		// Returns the range of new items
+		PointerRange<T> AddZeroed(size_t count) {
 			EnsureSpace(m_num + count);
+			T* first = m_data + m_num; // After growing, pointer is valid
 			for (size_t i = 0; i < count; ++i) {
 				T& item = AddSafe();
 				memset(&item, 0, sizeof(T));
 			}
+			return PointerRange<T>{first, first + count};
 		}
 
 		void AddUnique(const T& item) {
