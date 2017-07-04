@@ -47,6 +47,11 @@ namespace mu {
 		void Add(const T& element) {
 			new(AddInternal()) T(element);
 		}
+		void AddMany(size_t count, const T& element) {
+			for (size_t i = 0; i < count; ++i) {
+				Add(element);
+			}
+		}
 		void Empty() {
 			for (size_t i = 0; i < m_num; ++i) {
 				(*this)[i].~T();
