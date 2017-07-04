@@ -13,6 +13,18 @@
       </ArrayItems>
     </Expand>
   </Type>
+
+  <!-- FixedArray<T, N> -->
+  <Type Name="mu::FixedArray&lt;*&gt;" >
+    <DisplayString>Size = {m_num}</DisplayString>
+    <Expand>
+      <Item Name="Size">m_num</Item>
+      <ArrayItems>
+        <Size>m_num</Size>
+        <ValuePointer>($T1*)m_data</ValuePointer>
+      </ArrayItems>
+    </Expand>
+  </Type>
   
   <!-- PointerRange<T> -->
   <Type Name="mu::ranges::PointerRange&lt;*&gt;" >
