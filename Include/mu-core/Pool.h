@@ -10,7 +10,7 @@
 namespace mu {
 
 	// Externally synchronized fixed-size pool
-	template<typename ElementType>
+	template<typename ElementType, typename IndexType=size_t>
 	class Pool {
 		ElementType* m_elements = nullptr;
 		BitArray m_flags;
@@ -37,20 +37,21 @@ namespace mu {
 
 		size_t GetFreeCount() const { return m_free; }
 
-		size_t AddDefaulted() {
+		IndexType AddDefaulted() {
 			size_t index = AllocateIndex();
 			new(&m_elements[index]) ElementType;
-			return index;
+			return IndexType{ index };
 		}
 
 		template<typename... TS>
-		size_t Emplace(TS&&... ts) {
+		IndexType Emplace(TS&&... ts) {
 			size_t index = AllocateIndex();
 			new(&m_elements[index]) ElementType(std::forward<TS>(ts)...);
-			return index;
+			return IndexType{ index };
 		}
 
-		void Return(size_t index) {
+		void Return(IndexType i) {
+			size_t index = (size_t)i;
 			CHECK(m_flags.GetBit(index));
 			CHECK(index < m_max);
 			++m_free;
@@ -70,11 +71,11 @@ namespace mu {
 			m_free = 0;
 		}
 
-		ElementType& operator[](size_t index) {
-			return m_elements[index];
+		ElementType& operator[](IndexType index) {
+			return m_elements[(size_t)index];
 		}
-		const ElementType& operator[](size_t index) const {
-			return m_elements[index];
+		const ElementType& operator[](IndexType index) const {
+			return m_elements[(size_t)index];
 		}
 
 	protected:
