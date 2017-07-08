@@ -92,9 +92,6 @@ void mu::dbg::LogInternal(mu::dbg::details::LogLevel, i32 count, StringFormatArg
 		{
 			size_t size = std::get<1>(arg.m_c_str);
 			const char* s = std::get<0>(arg.m_c_str);
-			if (size == 0) {
-				size = strlen(s);
-			}
 
 			// We don't know the internal size of the converter so flush and then copy wholesale 
 			// - should the converter return a size tuple so we can adaptively avoid each flush without strlen?
@@ -194,7 +191,7 @@ namespace mu {
 	}
 	StringFormatArg::StringFormatArg(const char* c_str)
 		: m_type(StringFormatArgType::C_Str)
-		, m_c_str(c_str, 0) {}
+		, m_c_str(c_str, strlen(c_str)) {}
 
 	StringFormatArg::StringFormatArg(const String_T<char>& str) {
 		if (str.IsEmpty()) {
