@@ -1,7 +1,8 @@
 #pragma once
 
-#include "mu-core/Ranges.h"
 #include "mu-core/Algorithms.h"
+#include "mu-core/Debug.h"
+#include "mu-core/Ranges.h"
 
 namespace mu {
 	template<typename T, size_t MAX>
@@ -13,8 +14,7 @@ namespace mu {
 	};
 
 	template<typename T, size_t MAX, bool TRIVIAL_DESTRUCTOR>
-	class FixedArrayDestructorMixin : public FixedArrayBase<T, MAX> {
-	};
+	class FixedArrayDestructorMixin : public FixedArrayBase<T, MAX> {};
 
 	template<typename T, size_t MAX>
 	class FixedArrayDestructorMixin<T, MAX, false> : public FixedArrayBase<T, MAX> {
@@ -31,18 +31,39 @@ namespace mu {
 
 	public:
 		FixedArray() {}
-		
+
 		size_t Num() const { return m_num; }
 		T* Data() { return (T*)m_data; }
 		const T* Data() const { return (T*)m_data; }
-		T& operator[](size_t index) { return ((T*)m_data)[index]; }
-		const T& operator[](size_t index) const { return ((T*)m_data)[index]; }
+		T& operator[](size_t index) {
+			CHECK(index < m_num);
+			return ((T*)m_data)[index];
+		}
+		const T& operator[](size_t index) const {
+			CHECK(index < m_num);
+			return ((T*)m_data)[index];
+		}
 
-		void AddZeroed(size_t count) {
+		PointerRange<T> AddZeroed(size_t count) {
 			CHECK(GetSlack() >= count);
 			T* start = Data() + m_num;
 			m_num += count;
 			memset(start, 0, sizeof(T)*count);
+			return { start, start + count };
+		}
+
+		PointerRange<T> AddUninitialized(size_t count) {
+			CHECK(GetSlack() >= count);
+			T* start = Data() + m_num;
+			m_num += count;
+			return { start, start + count };
+		}
+
+		template<typename RANGE>
+		void AddRange(RANGE r) {
+			for (; !r.IsEmpty(); r.Advance()) {
+				Add(r.Front());
+			}
 		}
 		void Add(const T& element) {
 			new(AddInternal()) T(element);
