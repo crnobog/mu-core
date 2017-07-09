@@ -156,12 +156,19 @@ namespace mu {
 		String s;
 		char buffer[256];
 		for (StringFormatArg& arg : arr) {
+			int count = 0;
 			switch (arg.m_type) {
 			case StringFormatArgType::C_Str:
 				s.Append(arg.m_c_str);
 				break;
 			case StringFormatArgType::Unsigned:
-				auto count = snprintf(buffer, 256, "%I64u", arg.m_uint);
+				count = snprintf(buffer, 256, "%I64u", arg.m_uint);
+				if (count > 0) {
+					s.Append(buffer);
+				}
+				break;
+			case StringFormatArgType::Double:
+				count = snprintf(buffer, 256, "%f", arg.m_double);
 				if (count > 0) {
 					s.Append(buffer);
 				}

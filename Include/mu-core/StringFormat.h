@@ -7,7 +7,8 @@
 enum class StringFormatArgType {
 	None,
 	C_Str,
-	Unsigned
+	Unsigned,
+	Double,
 };
 
 namespace mu {
@@ -18,6 +19,7 @@ namespace mu {
 		union {
 			std::tuple<const char*, size_t> m_c_str;
 			u64 m_uint;
+			double m_double;
 		};
 		StringFormatArg() {}
 		StringFormatArg(const StringFormatArg& other);
@@ -26,6 +28,8 @@ namespace mu {
 		StringFormatArg(const String_T<char>& str);
 		StringFormatArg(i32 i);
 		StringFormatArg(u32 u);
+		StringFormatArg(float f);
+		StringFormatArg(double d);
 		StringFormatArg(size_t s);
 
 		template<typename RANGE, EnableIf<RANGE::IsContiguous && RANGE::HasSize>...>

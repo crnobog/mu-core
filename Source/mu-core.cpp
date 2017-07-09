@@ -211,6 +211,14 @@ namespace mu {
 		: m_type(StringFormatArgType::Unsigned)
 		, m_uint(u) {}
 
+	StringFormatArg::StringFormatArg(float f)
+		: m_type(StringFormatArgType::Double)
+		, m_double(f) {}
+
+	StringFormatArg::StringFormatArg(double d)
+		: m_type(StringFormatArgType::Double)
+		, m_double(d) {}
+
 	StringFormatArg::StringFormatArg(size_t s)
 		: m_type(StringFormatArgType::Unsigned)
 		, m_uint(s) {}
