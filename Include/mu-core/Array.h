@@ -4,6 +4,7 @@
 
 #include "mu-core/PointerRange.h"
 #include "mu-core/Algorithms.h"
+#include "mu-core/PrimitiveTypes.h"
 
 namespace mu {
 	template<typename T>
@@ -196,6 +197,9 @@ namespace mu {
 
 		T* Data() { return m_data; }
 		const T* Data() const { return m_data; }
+
+		u8* Bytes() { return (u8*)m_data; }
+		const u8* Bytes() const { return (const u8*)m_data; }
 
 		size_t Num() const { return m_num; }
 		size_t NumBytes() const { return m_num * sizeof(T); }
