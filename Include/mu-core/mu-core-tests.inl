@@ -10,6 +10,9 @@ namespace Microsoft {
 		namespace CppUnitTestFramework {
 			template<>
 			std::wstring ToString(const mu::String& s) {
+				if (s.GetLength() == 0) {
+					return std::wstring{};
+				}
 				auto w = mu::UTF8StringToWide(Range(s));
 				return std::wstring(w.GetRaw());
 			}

@@ -1,4 +1,4 @@
-#include "mu-core-tests.inl"
+#include "mu-core/mu-core-tests.inl"
 #include "mu-core/String.h"
 #include "mu-core/Ranges.h"
 

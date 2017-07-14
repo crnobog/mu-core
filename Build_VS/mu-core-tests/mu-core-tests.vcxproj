@@ -19,7 +19,6 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\Source\mu-core.cpp" />
     <ClCompile Include="..\..\Source\Tests_Algorithms.cpp" />
     <ClCompile Include="..\..\Source\Tests_Array.cpp" />
     <ClCompile Include="..\..\Source\Tests_BitArray.cpp" />
@@ -30,31 +29,7 @@
     <ClCompile Include="..\..\Source\Tests_String.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\Include\mu-core\Algorithms.h" />
-    <ClInclude Include="..\..\Include\mu-core\Array.h" />
-    <ClInclude Include="..\..\Include\mu-core\BitArray.h" />
-    <ClInclude Include="..\..\Include\mu-core\Debug.h" />
-    <ClInclude Include="..\..\Include\mu-core\FileReader.h" />
-    <ClInclude Include="..\..\Include\mu-core\FixedArray.h" />
-    <ClInclude Include="..\..\Include\mu-core\Functors.h" />
-    <ClInclude Include="..\..\Include\mu-core\Math.h" />
-    <ClInclude Include="..\..\Include\mu-core\Metaprogramming.h" />
-    <ClInclude Include="..\..\Include\mu-core\mu-core.h" />
-    <ClInclude Include="..\..\Include\mu-core\Paths.h" />
-    <ClInclude Include="..\..\Include\mu-core\PrimitiveTypes.h" />
-    <ClInclude Include="..\..\Include\mu-core\Ranges.h" />
-    <ClInclude Include="..\..\Include\mu-core\RefCountPtr.h" />
-    <ClInclude Include="..\..\Include\mu-core\Scope.h" />
-    <ClInclude Include="..\..\Include\mu-core\String.h" />
-    <ClInclude Include="..\..\Include\mu-core\StringFormat.h" />
-    <ClInclude Include="..\..\Include\mu-core\Utils.h" />
-    <ClInclude Include="..\..\Include\mu-core\Vectors.h" />
-  </ItemGroup>
-  <ItemGroup>
     <Natvis Include="..\mu-core.natvis" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="..\..\Source\mu-core-tests.inl" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{DF70817F-475B-4C28-A313-391D0CC6A623}</ProjectGuid>
@@ -97,6 +72,7 @@
   <ImportGroup Label="ExtensionSettings">
   </ImportGroup>
   <ImportGroup Label="Shared">
+    <Import Project="..\mu-core\mu-core.vcxitems" Label="Shared" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />

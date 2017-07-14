@@ -1,4 +1,4 @@
-#include "mu-core-tests.inl"
+#include "mu-core/mu-core-tests.inl"
 
 #include "mu-core/Paths.h"
 #include "mu-core/String.h"

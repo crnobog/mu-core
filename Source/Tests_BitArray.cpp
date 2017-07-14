@@ -3,7 +3,7 @@
 #include "mu-core/PrimitiveTypes.h"
 #include "mu-core/Ranges.h"
 
-#include "mu-core-tests.inl"
+#include "mu-core/mu-core-tests.inl"
 
 namespace mu_core_tests_bitarray {
 	using namespace mu;

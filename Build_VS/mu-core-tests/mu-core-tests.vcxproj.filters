@@ -21,9 +21,6 @@
     <ClCompile Include="..\..\Source\Tests_String.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\mu-core.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Source\Tests_Paths.cpp">
       <Filter>Source</Filter>
     </ClCompile>
@@ -38,70 +35,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\Include\mu-core\Functors.h">
-      <Filter>Include</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Include\mu-core\Math.h">
-      <Filter>Include</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Include\mu-core\Metaprogramming.h">
-      <Filter>Include</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Include\mu-core\Ranges.h">
-      <Filter>Include</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Include\mu-core\Scope.h">
-      <Filter>Include</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Include\mu-core\Utils.h">
-      <Filter>Include</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Include\mu-core\Algorithms.h">
-      <Filter>Include</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Include\mu-core\Array.h">
-      <Filter>Include</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Include\mu-core\Debug.h">
-      <Filter>Include</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Include\mu-core\FileReader.h">
-      <Filter>Include</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Include\mu-core\String.h">
-      <Filter>Include</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Include\mu-core\mu-core.h">
-      <Filter>Include</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Include\mu-core\StringFormat.h">
-      <Filter>Include</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Include\mu-core\Paths.h">
-      <Filter>Include</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Include\mu-core\PrimitiveTypes.h">
-      <Filter>Include</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Include\mu-core\RefCountPtr.h">
-      <Filter>Include</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Include\mu-core\Vectors.h">
-      <Filter>Include</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Include\mu-core\FixedArray.h">
-      <Filter>Include</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Include\mu-core\BitArray.h">
-      <Filter>Include</Filter>
-    </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
     <Natvis Include="..\mu-core.natvis" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="..\..\Source\mu-core-tests.inl">
-      <Filter>Include</Filter>
-    </None>
   </ItemGroup>
 </Project>

@@ -1,0 +1,42 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Label="Globals">
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <ItemsProjectGuid>{c98b0bc2-fa1c-4de8-89c5-79b9725e0aa4}</ItemsProjectGuid>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);$(MSBuildThisFileDirectory)</AdditionalIncludeDirectories>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ProjectCapability Include="SourceItemsFromImports" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\Include\mu-core\Algorithms.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\Include\mu-core\Array.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\Include\mu-core\BitArray.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\Include\mu-core\Debug.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\Include\mu-core\FileReader.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\Include\mu-core\FixedArray.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\Include\mu-core\Functors.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\Include\mu-core\Math.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\Include\mu-core\Metaprogramming.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\Include\mu-core\mu-core.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\Include\mu-core\Paths.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\Include\mu-core\PrimitiveTypes.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\Include\mu-core\Ranges.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\Include\mu-core\RefCountPtr.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\Include\mu-core\Scope.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\Include\mu-core\String.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\Include\mu-core\StringFormat.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\Include\mu-core\Utils.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="$(MSBuildThisFileDirectory)..\..\Source\mu-core-tests.inl" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\Source\mu-core.cpp" />
+  </ItemGroup>
+</Project>

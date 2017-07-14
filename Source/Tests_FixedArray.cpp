@@ -1,4 +1,4 @@
-#include "mu-core-tests.inl"
+#include "mu-core/mu-core-tests.inl"
 #include "mu-core/FixedArray.h"
 
 namespace mu_core_tests_fixedarray {

@@ -28,4 +28,3 @@
 #include "Scope.h"
 #include "String.h"
 #include "Utils.h"
-#include "Vectors.h"
