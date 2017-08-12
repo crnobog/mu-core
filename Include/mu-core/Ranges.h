@@ -52,11 +52,32 @@ namespace mu {
 	auto Range(const FixedArray<T, MAX>& arr) {
 		return Range(arr.Data(), arr.Num());
 	}
-
+	
 	template<typename RANGE>
 	auto Range(RANGE&& r) {
 		return std::forward<RANGE>(r);
 	}
+
+	template<typename T>
+	auto ByteRange(const T& t) {
+		return Range( (const u8*)&t, sizeof(T) );
+	}
+	
+	template<typename T>
+	auto ByteRange(T* t, size_t num) {
+		return Range( (u8*)t, num * sizeof(T) );
+	}
+
+	template<typename T>
+	auto ByteRange(const T* t, size_t num) {
+		return Range((const u8*)t, num * sizeof(T));
+	}
+
+	template<typename T>
+	auto ByteRange(T* t) {
+		return Range((u8*)&t, sizeof(T));
+	}
+
 
 	template<typename... RANGES>
 	auto Zip(RANGES&&... ranges) {

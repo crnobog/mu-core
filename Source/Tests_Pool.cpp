@@ -6,14 +6,6 @@
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
-namespace Microsoft {
-	namespace VisualStudio {
-		namespace CppUnitTestFramework {
-			template<> inline std::wstring ToString<char32_t>(const char32_t& t) { RETURN_WIDE_STRING((uint32_t)t); }
-		}
-	}
-}
-
 namespace mu_core_tests_pool
 {
 	using namespace mu;

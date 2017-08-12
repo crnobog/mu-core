@@ -25,6 +25,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\Include\mu-core\Metaprogramming.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\Include\mu-core\mu-core.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\Include\mu-core\Paths.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\Include\mu-core\Pool.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\Include\mu-core\PrimitiveTypes.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\Include\mu-core\Ranges.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\Include\mu-core\RefCountPtr.h" />

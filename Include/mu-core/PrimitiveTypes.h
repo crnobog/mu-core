@@ -14,7 +14,15 @@ typedef unsigned __int64 u64;
 typedef float f32;
 typedef double f64;
 
+#if defined(_WIN64)
+typedef u64 uptr;
+typedef i64 iptr;
+#else
+typedef u32 uptr;
+typedef i32 iptr;
+#endif
 
+constexpr u16 u16_max = 0xffffui16;
 constexpr u32 u32_max = 0xffffffffui32;
 
 #endif

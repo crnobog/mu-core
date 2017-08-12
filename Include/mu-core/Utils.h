@@ -1,6 +1,11 @@
 #pragma once
 
-template<typename T, size_t N> constexpr size_t ArraySize(const T(&)[N]) { return N; }
+template<typename T, size_t N> inline constexpr size_t ArraySize(const T(&)[N]) { return N; }
+
+template<typename T> inline constexpr T AlignPow2(T t, size_t align) {
+	align -= 1;
+	return (T)(((size_t)t + align) & ~align);
+}
 
 namespace mu
 {

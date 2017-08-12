@@ -3,14 +3,17 @@
 #include "mu-core/RangeIteration.h"
 
 namespace mu {
-// A linear forward range over raw memory of a certain type
+	// A linear range over raw memory of a certain type
+	//	- Forward range
+	//	- Indexable range
 	template<typename T>
 	class PointerRange : public details::WithBeginEnd<PointerRange<T>> {
+	public:
 		T* m_start, *m_end;
 
-	public:
 		static constexpr bool HasSize = true;
 		static constexpr bool IsContiguous = true;
+		static constexpr bool IsIndexable = true;
 
 		template<class U>
 		friend class PointerRange;
@@ -37,6 +40,13 @@ namespace mu {
 		const T& Front() const { return *m_start; }
 		size_t Size() const { return m_end - m_start; }
 
+		T& operator[](size_t index) {
+			return m_start[index];
+		}
+		const T& operator[](size_t index) const {
+			return m_start[index];
+		}
+
 		template<typename U>
 		bool operator==(const PointerRange<U>& other) const {
 			return m_start == other.m_start
@@ -48,8 +58,6 @@ namespace mu {
 			return m_start != other.m_start
 				|| m_end != other.m_end;
 		}
-
-		PointerRange MakeEmpty() const { return PointerRange{ nullptr, nullptr }; }
 	};
 
 	template<typename T>

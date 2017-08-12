@@ -9,69 +9,30 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="C:\Code\Projects\muteki\mu-core\Build_VS\mu-core\..\..\Include\mu-core\Utils.h">
-      <Filter>Include</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Code\Projects\muteki\mu-core\Build_VS\mu-core\..\..\Include\mu-core\Algorithms.h">
-      <Filter>Include</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Code\Projects\muteki\mu-core\Build_VS\mu-core\..\..\Include\mu-core\Array.h">
-      <Filter>Include</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Code\Projects\muteki\mu-core\Build_VS\mu-core\..\..\Include\mu-core\BitArray.h">
-      <Filter>Include</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Code\Projects\muteki\mu-core\Build_VS\mu-core\..\..\Include\mu-core\Debug.h">
-      <Filter>Include</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Code\Projects\muteki\mu-core\Build_VS\mu-core\..\..\Include\mu-core\FileReader.h">
-      <Filter>Include</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Code\Projects\muteki\mu-core\Build_VS\mu-core\..\..\Include\mu-core\FixedArray.h">
-      <Filter>Include</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Code\Projects\muteki\mu-core\Build_VS\mu-core\..\..\Include\mu-core\Functors.h">
-      <Filter>Include</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Code\Projects\muteki\mu-core\Build_VS\mu-core\..\..\Include\mu-core\Math.h">
-      <Filter>Include</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Code\Projects\muteki\mu-core\Build_VS\mu-core\..\..\Include\mu-core\Metaprogramming.h">
-      <Filter>Include</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Code\Projects\muteki\mu-core\Build_VS\mu-core\..\..\Include\mu-core\mu-core.h">
-      <Filter>Include</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Code\Projects\muteki\mu-core\Build_VS\mu-core\..\..\Include\mu-core\Paths.h">
-      <Filter>Include</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Code\Projects\muteki\mu-core\Build_VS\mu-core\..\..\Include\mu-core\PrimitiveTypes.h">
-      <Filter>Include</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Code\Projects\muteki\mu-core\Build_VS\mu-core\..\..\Include\mu-core\Ranges.h">
-      <Filter>Include</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Code\Projects\muteki\mu-core\Build_VS\mu-core\..\..\Include\mu-core\RefCountPtr.h">
-      <Filter>Include</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Code\Projects\muteki\mu-core\Build_VS\mu-core\..\..\Include\mu-core\Scope.h">
-      <Filter>Include</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Code\Projects\muteki\mu-core\Build_VS\mu-core\..\..\Include\mu-core\String.h">
-      <Filter>Include</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Code\Projects\muteki\mu-core\Build_VS\mu-core\..\..\Include\mu-core\StringFormat.h">
-      <Filter>Include</Filter>
-    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\Include\mu-core\Algorithms.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\Include\mu-core\Array.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\Include\mu-core\BitArray.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\Include\mu-core\Debug.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\Include\mu-core\FileReader.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\Include\mu-core\FixedArray.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\Include\mu-core\Functors.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\Include\mu-core\Math.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\Include\mu-core\Metaprogramming.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\Include\mu-core\mu-core.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\Include\mu-core\Paths.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\Include\mu-core\PrimitiveTypes.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\Include\mu-core\Ranges.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\Include\mu-core\RefCountPtr.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\Include\mu-core\Scope.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\Include\mu-core\String.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\Include\mu-core\StringFormat.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\Include\mu-core\Utils.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\Include\mu-core\Pool.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="C:\Code\Projects\muteki\mu-core\Build_VS\mu-core\..\..\Source\mu-core-tests.inl">
-      <Filter>Include</Filter>
-    </None>
+    <None Include="$(MSBuildThisFileDirectory)..\..\Source\mu-core-tests.inl" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="C:\Code\Projects\muteki\mu-core\Build_VS\mu-core\..\..\Source\mu-core.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\Source\mu-core.cpp" />
   </ItemGroup>
 </Project>

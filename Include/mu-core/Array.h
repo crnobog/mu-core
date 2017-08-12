@@ -104,14 +104,26 @@ namespace mu {
 			return EmplaceSafe(std::forward<T>(item));
 		}
 
+		T& AddZeroed() {
+			EnsureSpace(m_num + 1);
+			T* t = m_data + m_num++;
+			memset(t, 0, sizeof(T));
+			return *t;
+		}
+
 		// Returns the range of new items
 		PointerRange<T> AddZeroed(size_t count) {
 			EnsureSpace(m_num + count);
 			T* first = m_data + m_num; // After growing, pointer is valid
-			for (size_t i = 0; i < count; ++i) {
-				T& item = AddSafe();
-				memset(&item, 0, sizeof(T));
-			}
+			m_num += count;
+			memset(first, 0, sizeof(T)*count);
+			return PointerRange<T>{first, first + count};
+		}
+
+		PointerRange<T> AddUninitialized(size_t count) {
+			EnsureSpace(m_num + count);
+			T* first = m_data + m_num; // After growing, pointer is valid
+			m_num += count;
 			return PointerRange<T>{first, first + count};
 		}
 
@@ -185,6 +197,13 @@ namespace mu {
 			mu::Move(mu::Range(m_data + index, m_num - index),
 				mu::Range(m_data + index + 1, m_num - index - 1));
 			m_num -= 1;
+		}
+
+		void RemoveAll() {
+			Destruct(0, m_num);
+			free(m_data);
+			m_data = nullptr;
+			m_num = m_max = 0;
 		}
 
 		T& operator[](size_t index) {

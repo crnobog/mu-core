@@ -10,6 +10,7 @@
 namespace mu {
 
 	// Externally synchronized fixed-size pool
+	// TODO: Think about name, use of destructors, should be moved out of core?
 	template<typename ElementType, typename IndexType=size_t>
 	class Pool {
 		ElementType* m_elements = nullptr;
@@ -35,6 +36,7 @@ namespace mu {
 		Pool& operator=(const Pool& other) = delete;
 		Pool& operator=(Pool&& other) = delete;
 
+		size_t GetMax() const { return m_max; }
 		size_t GetFreeCount() const { return m_free; }
 
 		IndexType AddDefaulted() {
@@ -77,7 +79,7 @@ namespace mu {
 		const ElementType& operator[](IndexType index) const {
 			return m_elements[(size_t)index];
 		}
-
+		
 	protected:
 		size_t AllocateIndex() {
 			CHECK(m_free > 0);
@@ -89,5 +91,50 @@ namespace mu {
 			m_flags.SetBit(index);
 			return index;
 		}
+
+		template<bool IsConst>
+		struct RangeTypes {
+			typedef Pool& PoolType;
+			typedef ElementType& ElementRef;
+			typedef ElementType* ElementPtr;
+		};
+
+		template<>
+		struct RangeTypes<true> {
+			typedef const Pool& PoolType;
+			typedef const ElementType& ElementRef;
+			typedef const ElementType* ElementPtr;
+		};
+
+		template<bool IsConst>
+		struct PoolRangeBase {
+			BitRange<true> m_flags;
+			typename RangeTypes<IsConst>::ElementPtr m_elements = nullptr;
+
+			PoolRangeBase(typename RangeTypes<IsConst>::PoolType p)
+				: m_flags(p.m_flags.GetSetBits())
+				, m_elements(p.m_elements) {}
+			bool IsEmpty() { return m_flags.IsEmpty(); }
+			void Advance() { m_flags.Advance(); }
+			std::tuple<IndexType, typename RangeTypes<IsConst>::ElementRef> Front() {
+				size_t index = m_flags.Front();
+				return { IndexType(index), m_elements[index] };
+			};
+		};
+		typedef PoolRangeBase<false> PoolRange;
+		typedef PoolRangeBase<true> ConstPoolRange;
+	public:
+		PoolRange Range() { return PoolRange(*this); }
+		ConstPoolRange Range() const { return ConstPoolRange(*this); }
 	};
+
+	template<typename T, typename IndexType>
+	auto Range(Pool<T, IndexType>& pool) {
+		return pool.Range();
+	}
+
+	template<typename T, typename IndexType>
+	auto Range(const Pool<T, IndexType>& pool) {
+		return pool.Range();
+	}
 }

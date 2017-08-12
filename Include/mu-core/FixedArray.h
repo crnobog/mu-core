@@ -66,6 +66,7 @@ namespace mu {
 			}
 		}
 		void Add(const T& element) {
+			CHECK(m_num < MAX);
 			new(AddInternal()) T(element);
 		}
 		void AddMany(size_t count, const T& element) {
