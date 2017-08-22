@@ -22,7 +22,8 @@ typedef u32 uptr;
 typedef i32 iptr;
 #endif
 
-constexpr u16 u16_max = 0xffffui16;
-constexpr u32 u32_max = 0xffffffffui32;
+constexpr u16 u16_max = 0xffffu;
+constexpr u32 u32_max = 0xffffffffu;
+constexpr u64 u64_max = 0xffffffffffffffffull;
 
 #endif

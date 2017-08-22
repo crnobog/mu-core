@@ -2,7 +2,7 @@
 <AutoVisualizer xmlns="http://schemas.microsoft.com/vstudio/debugger/natvis/2010">
   
   <!-- Array<T> -->
-  <Type Name="Array&lt;*&gt;" >
+  <Type Name="mu::Array&lt;*&gt;" >
     <DisplayString>Size = {m_num}</DisplayString>
     <Expand>
       <Item Name="Size">m_num</Item>
@@ -35,6 +35,37 @@
         <Size>m_end - m_start</Size>
         <ValuePointer>m_start</ValuePointer>
       </ArrayItems>
+    </Expand>
+  </Type>
+  
+  <!-- HashTable<K, V> -->
+  <Type Name="mu::HashTable&lt;*,*&gt;" >
+    <DisplayString>Num = { m_used }, Max = {m_size}</DisplayString>
+    <Expand>
+      <Synthetic Name="HashState">
+        <Expand>
+          <ArrayItems>
+            <Size>m_size</Size>
+            <ValuePointer>m_hash_state</ValuePointer>
+          </ArrayItems>
+        </Expand>
+      </Synthetic>
+      <Synthetic Name="Keys">
+        <Expand>
+          <ArrayItems>
+            <Size>m_size</Size>
+            <ValuePointer>m_keys</ValuePointer>
+          </ArrayItems>
+        </Expand>
+      </Synthetic>
+      <Synthetic Name="Values">
+        <Expand>
+          <ArrayItems>
+            <Size>m_size</Size>
+            <ValuePointer>m_values</ValuePointer>
+          </ArrayItems>
+        </Expand>
+      </Synthetic>
     </Expand>
   </Type>
   

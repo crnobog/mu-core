@@ -279,5 +279,11 @@ namespace mu {
 	}
 }
 
+#include "SpookyV2.h"
 
+namespace mu {
+	u64 HashMemory(void* data, size_t num_bytes) {
+		return SpookyHash::Hash64(data, num_bytes, 0);
+	}
+}
 

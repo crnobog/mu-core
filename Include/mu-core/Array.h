@@ -179,7 +179,7 @@ namespace mu {
 
 		template<typename... US>
 		size_t Emplace(US&&... us) {
-			return Add(T(std::forward<US>(us)...));
+			return Add(T{ std::forward<US>(us)... });
 		}
 
 		template<typename RANGE>

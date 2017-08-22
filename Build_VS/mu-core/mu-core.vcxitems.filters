@@ -1,14 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Include">
-      <UniqueIdentifier>{dba9fadc-de90-42de-a33c-14f69329510b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source">
-      <UniqueIdentifier>{743419a2-838e-4137-aebb-1c6c7ded1b08}</UniqueIdentifier>
-    </Filter>
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\Include\mu-core\Algorithms.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\Include\mu-core\Array.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\Include\mu-core\BitArray.h" />
@@ -28,11 +20,32 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\Include\mu-core\StringFormat.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\Include\mu-core\Utils.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\Include\mu-core\Pool.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\Include\mu-core\HashTable.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\Include\mu-core\IotaRange.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\Include\mu-core\PointerRange.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\Include\mu-core\RangeIteration.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\Include\mu-core\RangeWrappers.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\Include\mu-core\TransformRange.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\Include\mu-core\ZipRange.h" />
+    <ClInclude Include="C:\Code\Projects\muteki\mu-core\Build_VS\mu-core\..\..\Source\SpookyV2.h">
+      <Filter>SpookyHash</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="$(MSBuildThisFileDirectory)..\..\Source\mu-core-tests.inl" />
+    <None Include="$(MSBuildThisFileDirectory)..\..\Include\mu-core\mu-core-tests.inl" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)..\..\Source\mu-core.cpp" />
+    <ClCompile Include="C:\Code\Projects\muteki\mu-core\Build_VS\mu-core\..\..\Source\SpookyV2.cpp">
+      <Filter>SpookyHash</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="SpookyHash">
+      <UniqueIdentifier>{58440e5b-3f22-4f63-9377-ada31b9298c2}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <Natvis Include="$(MSBuildThisFileDirectory)..\mu-core.natvis" />
   </ItemGroup>
 </Project>

@@ -43,3 +43,10 @@ namespace mu {
 		};
 	}
 }
+
+#define MU_RANGE_ITERATION_SUPPORT \
+	auto begin() { return *this; } \
+	auto end() { return mu::details::RangeSentinel{}; } \
+	void operator++() { Advance(); } \
+	bool operator!=(mu::details::RangeSentinel) { return !IsEmpty(); } \
+	auto operator*() { return Front(); } 

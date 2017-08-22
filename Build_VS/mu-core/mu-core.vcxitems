@@ -21,23 +21,35 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\Include\mu-core\FileReader.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\Include\mu-core\FixedArray.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\Include\mu-core\Functors.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\Include\mu-core\HashTable.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\Include\mu-core\IotaRange.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\Include\mu-core\Math.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\Include\mu-core\Metaprogramming.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\Include\mu-core\mu-core.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\Include\mu-core\Paths.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\Include\mu-core\PointerRange.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\Include\mu-core\Pool.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\Include\mu-core\PrimitiveTypes.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\Include\mu-core\RangeIteration.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\Include\mu-core\Ranges.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\Include\mu-core\RangeWrappers.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\Include\mu-core\RefCountPtr.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\Include\mu-core\Scope.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\Include\mu-core\String.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\Include\mu-core\StringFormat.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\Include\mu-core\TransformRange.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\Include\mu-core\Utils.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\Include\mu-core\ZipRange.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\Source\SpookyV2.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="$(MSBuildThisFileDirectory)..\..\Source\mu-core-tests.inl" />
+    <None Include="$(MSBuildThisFileDirectory)..\..\Include\mu-core\mu-core-tests.inl" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)..\..\Source\mu-core.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\Source\SpookyV2.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Natvis Include="$(MSBuildThisFileDirectory)..\mu-core.natvis" />
   </ItemGroup>
 </Project>
