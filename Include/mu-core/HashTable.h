@@ -63,6 +63,7 @@ namespace mu {
 		// Returns a reference to the value associated with the given key.
 		ValueType& Find(const KeyType& key);
 		const ValueType& Find(const KeyType& key) const;
+		ValueType FindOrDefault(const KeyType& key, ValueType value = {}) const;
 		ValueType& operator[](const KeyType& key) { return Find(key); }
 		const ValueType& operator[](const KeyType& key) const { return Find(key); }
 
@@ -338,4 +339,13 @@ namespace mu {
 		__assume(false);
 	}
 
+	template<typename KeyType, typename ValueType>
+	ValueType HashTable<KeyType, ValueType>::FindOrDefault(const KeyType& key, ValueType value) const {
+		size_t idx = 0;
+		u64 hash = CalcHash(key);
+		if (FindIndex(key, hash, idx)) {
+			return m_values[idx];
+		}
+		return std::move(value);
+	}
 }
