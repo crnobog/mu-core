@@ -219,6 +219,15 @@ namespace mu {
 			out_index = first_empty;
 			return false;
 		}
+
+		void DestroyItems() {
+			for (size_t i = 0; i < m_size; ++i) {
+				if (m_hash_state[i].State == HashState::Filled) {
+					m_values[i].~ValueType();
+					m_keys[i].~KeyType();
+				}
+			}
+		}
 	public:
 
 		HashRange MakeRange() { return { HashUtil::FirstFilled(0, m_hash_state, m_size), m_size, m_hash_state, m_keys, m_values }; }
@@ -245,13 +254,14 @@ namespace mu {
 	
 	template<typename KeyType, typename ValueType>
 	HashTable<KeyType, ValueType>::~HashTable() {
+		DestroyItems();
 		Deallocate();
 	}
 
 	template<typename KeyType, typename ValueType>
 	HashTable<KeyType, ValueType>& HashTable<KeyType, ValueType>::operator=(const HashTable& other) {
 		if (m_size < other.m_size) {
-			// TODO: run destructors here
+			DestroyItems();
 			Deallocate();
 			m_size = other.m_size;
 			Allocate();
@@ -269,7 +279,7 @@ namespace mu {
 
 	template<typename KeyType, typename ValueType>
 	HashTable<KeyType, ValueType>& HashTable<KeyType, ValueType>::operator=(HashTable&& other) {
-		// TODO: run destructors here
+		DestroyItems();
 		Deallocate();
 
 		m_size = other.m_size;
