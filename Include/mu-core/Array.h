@@ -23,13 +23,6 @@ namespace mu {
 			}
 		}
 
-		template<class RANGE>
-		Array(RANGE&& r) {
-			for (auto&& item : r) {
-				Add(item);
-			}
-		}
-
 		Array(const Array& other) {
 			InitEmpty(other.m_num);
 			for (auto&& item : other) {
@@ -67,30 +60,6 @@ namespace mu {
 			if (new_max > m_max) {
 				Grow(new_max);
 			}
-		}
-
-		static Array MakeUninitialized(size_t num) {
-			Array ret{};
-			ret.m_data = (T*)malloc(sizeof(T)* num);
-			ret.m_num = num;
-			ret.m_max = num;
-			return std::move(ret);
-		}
-
-		template<typename... US>
-		static Array Make(US&&... us) {
-			Array ret{};
-			ret.Reserve(sizeof...(US));
-			ret.EmplaceMany(std::forward<US>(us)...);
-			return std::move(ret);
-		}
-
-		template<typename... US>
-		static Array MakeUnique(US&&... us) {
-			Array ret{};
-			ret.Reserve(sizeof...(US));
-			ret.AddManyUnique(std::forward<US>(us)...);
-			return std::move(ret);
 		}
 
 		size_t Add(const T& item) {
@@ -137,44 +106,6 @@ namespace mu {
 			if (!Contains(item)) {
 				Add(std::forward<T>(item));
 			}
-		}
-
-		template<typename U>
-		void AddManyUnique(U&& u) {
-			AddUnique(std::forward<U>(u));
-		}
-
-		template<typename U, typename... US>
-		void AddManyUnique(U&& u, US&&... us) {
-			AddUnique(std::forward<U>(u));
-			AddManyUnique(std::forward<US>(us)...);
-		}
-
-		template<typename U>
-		void AddMany(U&& u) {
-			Add(std::forward<U>(u));
-		}
-
-		template<typename U, typename... US>
-		void AddMany(U&& u, US&&... us) {
-			Add(std::forward<U>(u));
-			AddMany(std::forward<US>(us)...);
-		}
-
-		template<typename U>
-		void EmplaceMany(U&& u) {
-			Emplace(std::forward<U>(u));
-		}
-
-		template<typename U, typename... US>
-		void EmplaceMany(U&& u, US&&... us) {
-			Emplace(std::forward<U>(u));
-			EmplaceMany(std::forward<US>(us)...);
-		}
-
-		size_t Emplace(T&& item) {
-			EnsureSpace(m_num + 1);
-			return EmplaceSafe(std::forward<T>(item));
 		}
 
 		template<typename... US>
@@ -279,4 +210,5 @@ namespace mu {
 			}
 		}
 	};
+
 }

@@ -162,7 +162,10 @@ int64_t FileReader::GetFileSize() const {
 mu::Array<u8> LoadFileToArray(const char* path, FileReadType type) {
 	FileReader reader = FileReader::Open(path);
 	size_t extra = type == FileReadType::Text ? 1 : 0;
-	auto arr = mu::Array<u8>::MakeUninitialized(reader.GetFileSize() + extra);
+	mu::Array<u8> arr;
+	size_t size = reader.GetFileSize() + extra;
+	arr.Reserve(size);
+	arr.AddUninitialized(size);
 	reader.Read(mu::Range(arr));
 	arr[arr.Num() - 1] = 0;
 	return std::move(arr);
