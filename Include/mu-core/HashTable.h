@@ -168,7 +168,7 @@ namespace mu {
 				}
 			}
 
-			CHECK(m_used == old_used);
+			Assert(m_used == old_used);
 		}
 
 		void AddHashed(const KeyType& key, u64 hash, const ValueType& value) {
@@ -178,7 +178,7 @@ namespace mu {
 				m_values[index] = value; // Should we insted destroy and create?
 			}
 			else {
-				CHECK(m_hash_state[index].State != HashState::Filled);
+				Assert(m_hash_state[index].State != HashState::Filled);
 
 				new (m_keys + index) KeyType(key);
 				new (m_values + index) ValueType(value); // Placement new into potentially uninitialized memory
@@ -322,7 +322,7 @@ namespace mu {
 			--m_used;
 			return std::move(m_values[idx]);
 		}
-		CHECK(false);
+		Assert(false);
 		__assume(false);
 	}
 
@@ -345,7 +345,7 @@ namespace mu {
 		if (FindIndex(key, hash, idx)) {
 			return m_values[idx];
 		}
-		CHECK(false);
+		Assert(false);
 		__assume(false);
 	}
 

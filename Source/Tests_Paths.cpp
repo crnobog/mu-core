@@ -5,6 +5,7 @@
 
 namespace mu_core_tests_string {
 	using namespace mu;
+	using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
 	TEST_CLASS(GetExtensionTests) {
 public:

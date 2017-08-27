@@ -29,17 +29,22 @@ namespace mu
 		template<typename ...ARGS>
 		void Err(ARGS... args)
 		{
-			StringFormatArg wrap_args[] = { StringFormatArg(std::forward<ARGS>(args))... };
-			LogInternal(details::LogLevel::Log, sizeof...(ARGS), wrap_args);
+			if constexpr (sizeof...(args) > 0) {
+				StringFormatArg wrap_args[] = { StringFormatArg(std::forward<ARGS>(args))... };
+				LogInternal(details::LogLevel::Log, sizeof...(ARGS), wrap_args);
+			}
 		}
 	}
 }
 
 #define BREAK_OR_CRASH (__debugbreak(),(*(int*)nullptr)++)
-#define ASSERT_MSG(...) (mu::dbg::Err(__VA_ARGS__))
 
-#define CHECKF(EXPRESSION, ...) if(!(EXPRESSION)) { ASSERT_MSG(__VA_ARGS__); BREAK_OR_CRASH; }
-#define ENSUREF(EXPRESSION, ...) ((EXPRESSION)?true:(ASSERT_MSG(__VA_ARGS__),BREAK_OR_CRASH,false))
-
-#define CHECK(EXPRESSION) CHECKF(EXPRESSION, "Check failed: " #EXPRESSION)
-#define ENSURE(EXPRESSION) ENSUREF(EXPRESSION, "Ensure failed: " #EXPRESSION)
+template<typename... TS>
+__forceinline bool Assert(bool e, TS... ts) {
+	if (!e) {
+		mu::dbg::Err(std::forward<TS>(ts)...);
+		BREAK_OR_CRASH; // TODO: Do not crash if no debugger is attached
+		return false;
+	}
+	return true;
+}

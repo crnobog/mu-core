@@ -54,8 +54,8 @@ namespace mu {
 
 		void Return(IndexType i) {
 			size_t index = (size_t)i;
-			CHECK(m_flags.GetBit(index));
-			CHECK(index < m_max);
+			Assert(m_flags.GetBit(index));
+			Assert(index < m_max);
 			++m_free;
 			m_flags.ClearBit(index);
 			m_elements[index].~ElementType();
@@ -82,10 +82,10 @@ namespace mu {
 		
 	protected:
 		size_t AllocateIndex() {
-			CHECK(m_free > 0);
+			Assert(m_free > 0);
 			--m_free;
 			auto r = m_flags.GetClearBits();
-			CHECK(!r.IsEmpty());
+			Assert(!r.IsEmpty());
 			
 			size_t index = r.Front();
 			m_flags.SetBit(index);

@@ -1,8 +1,11 @@
-#include "mu-core/mu-core-tests.inl"
+
 #include "mu-core/FixedArray.h"
+
+#include "mu-core/mu-core-tests.inl"
 
 namespace mu_core_tests_fixedarray {
 	using namespace mu;
+	using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
 	i32 ElementConstructorCount = 0;
 	i32 ElementCopyConstructorCount = 0;

@@ -3,8 +3,6 @@
 
 #include "mu-core/String.h"
 
-using namespace Microsoft::VisualStudio::CppUnitTestFramework;
-
 namespace Microsoft {
 	namespace VisualStudio {
 		namespace CppUnitTestFramework {

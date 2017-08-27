@@ -4,10 +4,10 @@
 
 #include <memory>
 
-using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
 namespace mu_core_tests_pool
 {
+	using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 	using namespace mu;
 
 	static int ConstructCount = 0;

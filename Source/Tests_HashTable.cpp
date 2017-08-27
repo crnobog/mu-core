@@ -7,6 +7,7 @@
 
 namespace mu_core_tests_hashtable {
 	using namespace mu;
+	using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
 	struct Key {
 		u64 Data;

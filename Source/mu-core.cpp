@@ -34,7 +34,7 @@ public:
 		TO_CHAR* out_next = nullptr;
 		std::codecvt_base::result res = DoConv(in_start, in_start + in_size, in_next,
 			buffer, buffer + ArraySize(buffer) - 1, out_next);
-		CHECK(res != std::codecvt_base::noconv);
+		Assert(res != std::codecvt_base::noconv);
 
 		// insert null byte so callers can use Front as a null-terminated c string
 		*out_next = 0;

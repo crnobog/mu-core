@@ -36,16 +36,16 @@ namespace mu {
 		T* Data() { return (T*)m_data; }
 		const T* Data() const { return (T*)m_data; }
 		T& operator[](size_t index) {
-			CHECK(index < m_num);
+			Assert(index < m_num);
 			return ((T*)m_data)[index];
 		}
 		const T& operator[](size_t index) const {
-			CHECK(index < m_num);
+			Assert(index < m_num);
 			return ((T*)m_data)[index];
 		}
 
 		PointerRange<T> AddZeroed(size_t count) {
-			CHECK(GetSlack() >= count);
+			Assert(GetSlack() >= count);
 			T* start = Data() + m_num;
 			m_num += count;
 			memset(start, 0, sizeof(T)*count);
@@ -53,7 +53,7 @@ namespace mu {
 		}
 
 		PointerRange<T> AddUninitialized(size_t count) {
-			CHECK(GetSlack() >= count);
+			Assert(GetSlack() >= count);
 			T* start = Data() + m_num;
 			m_num += count;
 			return { start, start + count };
@@ -66,7 +66,7 @@ namespace mu {
 			}
 		}
 		void Add(const T& element) {
-			CHECK(m_num < MAX);
+			Assert(m_num < MAX);
 			new(AddInternal()) T(element);
 		}
 		void AddMany(size_t count, const T& element) {

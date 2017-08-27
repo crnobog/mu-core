@@ -7,6 +7,7 @@
 
 namespace mu_core_tests_bitarray {
 	using namespace mu;
+	using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
 	using std::get;
 
