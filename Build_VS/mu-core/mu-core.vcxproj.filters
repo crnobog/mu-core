@@ -31,9 +31,17 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\Include\mu-core\mu-core-tests.inl" />
+    <None Include="..\..\Include\mu-core\Tests\Array_Tests.inl">
+      <Filter>Tests</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Source\mu-core.cpp" />
     <ClCompile Include="..\..\Source\SpookyV2.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Tests">
+      <UniqueIdentifier>{fcf0f09c-66e6-42d5-beeb-a12f0cb60513}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
 </Project>

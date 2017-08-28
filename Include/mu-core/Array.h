@@ -125,6 +125,7 @@ namespace mu {
 		}
 
 		void RemoveAt(size_t index) {
+			Destruct(index, 1);
 			mu::Move(mu::Range(m_data + index, m_num - index),
 				mu::Range(m_data + index + 1, m_num - index - 1));
 			m_num -= 1;
@@ -210,5 +211,8 @@ namespace mu {
 			}
 		}
 	};
-
 }
+
+#ifdef DOCTEST_LIBRARY_INCLUDED
+#include "Tests/Array_Tests.inl"
+#endif

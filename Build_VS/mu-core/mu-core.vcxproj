@@ -57,6 +57,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\Include\mu-core\mu-core-tests.inl" />
+    <None Include="..\..\Include\mu-core\Tests\Array_Tests.inl" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Source\mu-core.cpp" />
