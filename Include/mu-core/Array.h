@@ -125,9 +125,16 @@ namespace mu {
 		}
 
 		void RemoveAt(size_t index) {
-			Destruct(index, 1);
-			mu::Move(mu::Range(m_data + index, m_num - index),
-				mu::Range(m_data + index + 1, m_num - index - 1));
+			if (index == m_num - 1) {
+				// Can't use below strategy as nothing will move on top of this element
+				Destruct(index, 1);
+			}
+			else {
+				auto from_range = mu::Range(m_data + index + 1, m_num - index - 1);
+				auto to_range = mu::Range(m_data + index, m_num - index);
+				// No destructor call necessary as moving element n+1 on top of n should free all necessary resources
+				mu::Move(to_range, from_range);
+			}
 			m_num -= 1;
 		}
 

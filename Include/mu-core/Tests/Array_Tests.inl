@@ -1,3 +1,6 @@
+// TODO: Should these tests be written in terms of "valid elements" rather than method call counts? 
+//	e.g. To account for differences in whether elements are destroyed or have other elements moved on top of them, achieving the same result
+
 #ifdef DOCTEST_LIBRARY_INCLUDED
 TEST_SUITE("Array") {
 	struct Element {
@@ -118,12 +121,23 @@ TEST_SUITE("Array") {
 	TEST_CASE("Array remove") {
 		mu::Array<Element> arr;
 		arr.Add(Element(12));
+		arr.Add(Element(22));
 
-		Element::Reset();
-		arr.RemoveAt(0);
+		SUBCASE("Remove last element") {
+			Element::Reset();
+			arr.RemoveAt(1);
 
-		CHECK_EQ(arr.Num(), 0);
-		CHECK_EQ(Element::DestructorCalls(), 1);
+			CHECK_EQ(arr.Num(), 1);
+			CHECK_EQ(Element::DestructorCalls(), 1);
+		}
+
+		SUBCASE("Remove non-last element") {
+			Element::Reset();
+			arr.RemoveAt(0);
+
+			CHECK_EQ(arr.Num(), 1);
+			CHECK_EQ(Element::MoveCalls(), 1);
+		}
 	}
 
 	TEST_CASE("Array AddZeroed") {
