@@ -138,3 +138,7 @@ namespace mu {
 		return pool.Range();
 	}
 }
+
+#ifdef DOCTEST_LIBRARY_INCLUDED
+#include "Tests/Pool_Tests.inl"
+#endif

@@ -28,10 +28,46 @@
     <ClInclude Include="..\..\Include\mu-core\Utils.h" />
     <ClInclude Include="..\..\Include\mu-core\ZipRange.h" />
     <ClInclude Include="..\..\Source\SpookyV2.h" />
+    <ClInclude Include="..\..\Include\mu-core\Tests\IotaRange_Tests.inl">
+      <Filter>Tests</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\Include\mu-core\mu-core-tests.inl" />
     <None Include="..\..\Include\mu-core\Tests\Array_Tests.inl">
+      <Filter>Tests</Filter>
+    </None>
+    <None Include="..\..\Include\mu-core\Tests\Algorithms_Tests.inl">
+      <Filter>Tests</Filter>
+    </None>
+    <None Include="..\..\Include\mu-core\Tests\BitArray_Tests.inl">
+      <Filter>Tests</Filter>
+    </None>
+    <None Include="..\..\Include\mu-core\Tests\FixedArray_Tests.inl">
+      <Filter>Tests</Filter>
+    </None>
+    <None Include="..\..\Include\mu-core\Tests\HashTable_Tests.inl">
+      <Filter>Tests</Filter>
+    </None>
+    <None Include="..\..\Include\mu-core\Tests\Paths_Tests.inl">
+      <Filter>Tests</Filter>
+    </None>
+    <None Include="..\..\Include\mu-core\Tests\Pool_Tests.inl">
+      <Filter>Tests</Filter>
+    </None>
+    <None Include="..\..\Include\mu-core\Tests\String_Tests.inl">
+      <Filter>Tests</Filter>
+    </None>
+    <None Include="..\..\Include\mu-core\Tests\PointerRange_Tests.inl">
+      <Filter>Tests</Filter>
+    </None>
+    <None Include="..\..\Include\mu-core\Tests\TransformRange_Tests.inl">
+      <Filter>Tests</Filter>
+    </None>
+    <None Include="..\..\Include\mu-core\Tests\ZipRange_Tests.inl">
+      <Filter>Tests</Filter>
+    </None>
+    <None Include="..\..\Include\mu-core\Tests\RangeWrapper_Tests.inl">
       <Filter>Tests</Filter>
     </None>
   </ItemGroup>

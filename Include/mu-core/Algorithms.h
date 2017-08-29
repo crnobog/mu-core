@@ -155,3 +155,7 @@ namespace mu {
 		}
 	}
 }
+
+#ifdef DOCTEST_LIBRARY_INCLUDED
+#include "Tests/Algorithms_Tests.inl"
+#endif

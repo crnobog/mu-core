@@ -97,3 +97,7 @@ namespace mu {
 		}
 	};
 }
+
+#ifdef DOCTEST_LIBRARY_INCLUDED
+#include "Tests/FixedArray_Tests.inl"
+#endif

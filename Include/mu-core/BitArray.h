@@ -53,6 +53,9 @@ namespace mu {
 		}
 	};
 
+	template<bool Set>
+	auto Range(BitRange<Set> r) { return r; }
+
 	class BitArray {
 		u64* m_data = nullptr;
 		size_t m_num_bits = 0;
@@ -130,3 +133,7 @@ namespace mu {
 		BitRange<false> GetClearBits() const { return BitRange<false>{ m_data, m_num_qwords, m_num_bits }; }
 	};
 }
+
+#ifdef DOCTEST_LIBRARY_INCLUDED
+#include "Tests/BitArray_Tests.inl"
+#endif

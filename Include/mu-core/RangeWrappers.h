@@ -43,3 +43,7 @@ namespace mu {
 		return ForwardRange<ElementType>(Range(std::forward<RANGE>(in_r)));
 	}
 }
+
+#ifdef DOCTEST_LIBRARY_INCLUDED
+#include "Tests/RangeWrapper_Tests.inl"
+#endif

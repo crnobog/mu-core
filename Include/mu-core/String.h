@@ -182,3 +182,7 @@ namespace mu {
 	String WideStringToUTF8(PointerRange<const wchar_t> in);
 	String_T<wchar_t> UTF8StringToWide(PointerRange<const char> in);
 }
+
+#ifdef DOCTEST_LIBRARY_INCLUDED
+#include "Tests/String_Tests.inl"
+#endif

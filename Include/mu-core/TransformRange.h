@@ -18,4 +18,18 @@ namespace mu {
 		template<typename T = IN_RANGE, EnableIf<T::HasSize>...>
 		size_t Size() const { return m_range.Size(); }
 	};
+
+
+	template<typename IN_RANGE, typename FUNC>
+	auto Transform(IN_RANGE&& r, FUNC&& f) {
+		return TransformRange<IN_RANGE, FUNC>(
+			std::forward<std::decay<IN_RANGE>::type>(r),
+			std::forward<std::decay<FUNC>::type>(f));
+	}
+
 }
+
+
+#ifdef DOCTEST_LIBRARY_INCLUDED
+#include "Tests/TransformRange_Tests.inl"
+#endif

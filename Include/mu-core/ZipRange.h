@@ -52,4 +52,13 @@ namespace mu {
 				std::numeric_limits<size_t>::max(), m_ranges);
 		}
 	};
+
+	template<typename... RANGES>
+	auto Zip(RANGES&&... ranges) {
+		return ZipRange<decltype(Range(std::forward<RANGES>(ranges)))...>(Range(std::forward<RANGES>(ranges))...);
+	}
 }
+
+#ifdef DOCTEST_LIBRARY_INCLUDED
+#include "Tests/ZipRange_Tests.inl"
+#endif

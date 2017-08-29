@@ -13,3 +13,7 @@ namespace mu {
 		PointerRange<const char> GetExtension(PointerRange<const char> path);
 	}
 }
+
+#ifdef DOCTEST_LIBRARY_INCLUDED
+#include "Tests/Paths_Tests.inl"
+#endif

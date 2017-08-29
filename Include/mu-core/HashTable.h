@@ -32,7 +32,7 @@ namespace mu {
 	};
 
 	namespace HashUtil {
-		size_t FirstFilled(size_t start_index, const HashState* state, size_t max) {
+		inline size_t FirstFilled(size_t start_index, const HashState* state, size_t max) {
 			for (size_t i = start_index; i < max; ++i) {
 				if (state[i].State == HashState::Filled) {
 					return i;
@@ -359,3 +359,7 @@ namespace mu {
 		return std::move(value);
 	}
 }
+
+#ifdef DOCTEST_LIBRARY_INCLUDED
+#include "Tests/HashTable_Tests.inl"
+#endif

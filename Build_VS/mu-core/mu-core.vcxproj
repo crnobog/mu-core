@@ -50,6 +50,7 @@
     <ClInclude Include="..\..\Include\mu-core\Scope.h" />
     <ClInclude Include="..\..\Include\mu-core\String.h" />
     <ClInclude Include="..\..\Include\mu-core\StringFormat.h" />
+    <ClInclude Include="..\..\Include\mu-core\Tests\IotaRange_Tests.inl" />
     <ClInclude Include="..\..\Include\mu-core\TransformRange.h" />
     <ClInclude Include="..\..\Include\mu-core\Utils.h" />
     <ClInclude Include="..\..\Include\mu-core\ZipRange.h" />
@@ -57,7 +58,18 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\Include\mu-core\mu-core-tests.inl" />
+    <None Include="..\..\Include\mu-core\Tests\Algorithms_Tests.inl" />
     <None Include="..\..\Include\mu-core\Tests\Array_Tests.inl" />
+    <None Include="..\..\Include\mu-core\Tests\BitArray_Tests.inl" />
+    <None Include="..\..\Include\mu-core\Tests\FixedArray_Tests.inl" />
+    <None Include="..\..\Include\mu-core\Tests\HashTable_Tests.inl" />
+    <None Include="..\..\Include\mu-core\Tests\Paths_Tests.inl" />
+    <None Include="..\..\Include\mu-core\Tests\PointerRange_Tests.inl" />
+    <None Include="..\..\Include\mu-core\Tests\Pool_Tests.inl" />
+    <None Include="..\..\Include\mu-core\Tests\RangeWrapper_Tests.inl" />
+    <None Include="..\..\Include\mu-core\Tests\String_Tests.inl" />
+    <None Include="..\..\Include\mu-core\Tests\TransformRange_Tests.inl" />
+    <None Include="..\..\Include\mu-core\Tests\ZipRange_Tests.inl" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Source\mu-core.cpp" />

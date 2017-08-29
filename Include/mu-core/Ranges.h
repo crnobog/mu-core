@@ -3,11 +3,6 @@
 #include "mu-core/Functors.h"
 #include "mu-core/Metaprogramming.h"
 
-#include "mu-core/IotaRange.h"
-#include "mu-core/PointerRange.h"
-#include "mu-core/TransformRange.h"
-#include "mu-core/ZipRange.h"
-
 #include "mu-core/RangeIteration.h"
 
 #include <tuple>
@@ -25,75 +20,7 @@
 //	};
 
 namespace mu {
-	template<typename T>
-	class Array;
-
-	template<typename T, size_t MAX>
-	class FixedArray;
-
-	// Functions to automatically construct ranges from pointers/arrays
-
-	template<typename T>
-	auto Range(Array<T>& arr) {
-		return Range(arr.Data(), arr.Num());
-	}
-
-	template<typename T>
-	auto Range(const Array<T>& arr) {
-		return Range(arr.Data(), arr.Num());
-	}
-
-	template<typename T, size_t MAX>
-	auto Range(FixedArray<T, MAX>& arr) {
-		return Range(arr.Data(), arr.Num());
-	}
-
-	template<typename T, size_t MAX>
-	auto Range(const FixedArray<T, MAX>& arr) {
-		return Range(arr.Data(), arr.Num());
-	}
 	
-	template<typename RANGE>
-	auto Range(RANGE&& r) {
-		return std::forward<RANGE>(r);
-	}
-
-	template<typename T>
-	auto ByteRange(const T& t) {
-		return Range( (const u8*)&t, sizeof(T) );
-	}
-	
-	template<typename T>
-	auto ByteRange(T* t, size_t num) {
-		return Range( (u8*)t, num * sizeof(T) );
-	}
-
-	template<typename T>
-	auto ByteRange(const T* t, size_t num) {
-		return Range((const u8*)t, num * sizeof(T));
-	}
-
-	template<typename T>
-	auto ByteRange(T* t) {
-		return Range((u8*)&t, sizeof(T));
-	}
-
-
-	template<typename... RANGES>
-	auto Zip(RANGES&&... ranges) {
-		return ZipRange<decltype(Range(std::forward<RANGES>(ranges)))...>(Range(std::forward<RANGES>(ranges))...);
-	}
-
-	template<typename T = size_t>
-	inline auto Iota(T start = 0) { return IotaRange<T>(start); }
-
-	template<typename IN_RANGE, typename FUNC>
-	auto Transform(IN_RANGE&& r, FUNC&& f) {
-		return TransformRange<IN_RANGE, FUNC>(
-			std::forward<std::decay<IN_RANGE>::type>(r),
-			std::forward<std::decay<FUNC>::type>(f));
-	}
-
 	template<typename R>
 	auto MakeRangeIterator(R&& r) {
 		typedef std::decay<R>::type RANGE_TYPE;

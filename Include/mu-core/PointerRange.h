@@ -3,6 +3,7 @@
 #include "mu-core/RangeIteration.h"
 
 namespace mu {
+
 	// A linear range over raw memory of a certain type
 	//	- Forward range
 	//	- Indexable range
@@ -61,6 +62,15 @@ namespace mu {
 	};
 
 	template<typename T>
+	auto Range(PointerRange<T> r) { return r; }
+
+	template<typename T>
+	class Array;
+
+	template<typename T, size_t MAX>
+	class FixedArray;
+	
+	template<typename T>
 	auto Range(T* ptr, size_t num) {
 		return Range(ptr, ptr + num);
 	}
@@ -74,4 +84,48 @@ namespace mu {
 	auto Range(T(&arr)[SIZE]) {
 		return Range(arr, arr + SIZE);
 	}
+
+	template<typename T>
+	auto Range(Array<T>& arr) {
+		return Range(arr.Data(), arr.Num());
+	}
+
+	template<typename T>
+	auto Range(const Array<T>& arr) {
+		return Range(arr.Data(), arr.Num());
+	}
+
+	template<typename T, size_t MAX>
+	auto Range(FixedArray<T, MAX>& arr) {
+		return Range(arr.Data(), arr.Num());
+	}
+
+	template<typename T, size_t MAX>
+	auto Range(const FixedArray<T, MAX>& arr) {
+		return Range(arr.Data(), arr.Num());
+	}
+
+	template<typename T>
+	auto ByteRange(const T& t) {
+		return Range((const u8*)&t, sizeof(T));
+	}
+
+	template<typename T>
+	auto ByteRange(T* t, size_t num) {
+		return Range((u8*)t, num * sizeof(T));
+	}
+
+	template<typename T>
+	auto ByteRange(const T* t, size_t num) {
+		return Range((const u8*)t, num * sizeof(T));
+	}
+
+	template<typename T>
+	auto ByteRange(T* t) {
+		return Range((u8*)&t, sizeof(T));
+	}
 }
+
+#ifdef DOCTEST_LIBRARY_INCLUDED
+#include "Tests/PointerRange_Tests.inl"
+#endif
