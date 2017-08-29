@@ -223,3 +223,7 @@ namespace mu {
 #ifdef DOCTEST_LIBRARY_INCLUDED
 #include "Tests/Array_Tests.inl"
 #endif
+
+#ifdef BENCHMARK
+#include "Benchmarks/Array_Benchmarks.inl"
+#endif

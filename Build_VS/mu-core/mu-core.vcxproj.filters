@@ -70,6 +70,12 @@
     <None Include="..\..\Include\mu-core\Tests\RangeWrapper_Tests.inl">
       <Filter>Tests</Filter>
     </None>
+    <None Include="..\..\Include\mu-core\Benchmarks\Array_Benchmarks.inl">
+      <Filter>Benchmarks</Filter>
+    </None>
+    <None Include="..\..\Include\mu-core\Benchmarks\HashTable_Benchmarks.inl">
+      <Filter>Benchmarks</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Source\mu-core.cpp" />
@@ -78,6 +84,9 @@
   <ItemGroup>
     <Filter Include="Tests">
       <UniqueIdentifier>{fcf0f09c-66e6-42d5-beeb-a12f0cb60513}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Benchmarks">
+      <UniqueIdentifier>{f3741775-033f-43f9-a9d6-8ab88318b124}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

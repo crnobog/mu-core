@@ -363,3 +363,7 @@ namespace mu {
 #ifdef DOCTEST_LIBRARY_INCLUDED
 #include "Tests/HashTable_Tests.inl"
 #endif
+
+#ifdef BENCHMARK
+#include "Benchmarks/HashTable_Benchmarks.inl"
+#endif
