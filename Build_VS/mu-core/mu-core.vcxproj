@@ -59,7 +59,6 @@
   <ItemGroup>
     <None Include="..\..\Include\mu-core\Benchmarks\Array_Benchmarks.inl" />
     <None Include="..\..\Include\mu-core\Benchmarks\HashTable_Benchmarks.inl" />
-    <None Include="..\..\Include\mu-core\mu-core-tests.inl" />
     <None Include="..\..\Include\mu-core\Tests\Algorithms_Tests.inl" />
     <None Include="..\..\Include\mu-core\Tests\Array_Tests.inl" />
     <None Include="..\..\Include\mu-core\Tests\BitArray_Tests.inl" />
