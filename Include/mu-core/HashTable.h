@@ -243,7 +243,7 @@ namespace mu {
 	HashTable<KeyType, ValueType>::HashTable() {}
 	
 	template<typename KeyType, typename ValueType>
-	HashTable<KeyType, ValueType>::HashTable(const HashTable& other) : m_size(other.m_size) {
+	HashTable<KeyType, ValueType>::HashTable(const HashTable& other) {
 		*this = other;
 	}
 	
@@ -260,7 +260,7 @@ namespace mu {
 
 	template<typename KeyType, typename ValueType>
 	HashTable<KeyType, ValueType>& HashTable<KeyType, ValueType>::operator=(const HashTable& other) {
-		if (m_size < other.m_size) {
+		if (m_size != other.m_size) {
 			DestroyItems();
 			Deallocate();
 			m_size = other.m_size;
@@ -275,6 +275,7 @@ namespace mu {
 				new(m_values + i) ValueType(other.m_values[i]);
 			}
 		}
+		return *this;
 	}
 
 	template<typename KeyType, typename ValueType>
