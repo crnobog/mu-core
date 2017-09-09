@@ -35,6 +35,7 @@
     <ClInclude Include="..\..\Include\mu-core\FileReader.h" />
     <ClInclude Include="..\..\Include\mu-core\FixedArray.h" />
     <ClInclude Include="..\..\Include\mu-core\Functors.h" />
+    <ClInclude Include="..\..\Include\mu-core\Global.h" />
     <ClInclude Include="..\..\Include\mu-core\HashTable.h" />
     <ClInclude Include="..\..\Include\mu-core\IotaRange.h" />
     <ClInclude Include="..\..\Include\mu-core\Math.h" />
@@ -220,6 +221,7 @@
       <SDLCheck>true</SDLCheck>
       <TreatWarningAsError>true</TreatWarningAsError>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
