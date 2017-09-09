@@ -1,7 +1,9 @@
-// TODO: Should these tests be written in terms of "valid elements" rather than method call counts? 
+﻿// TODO: Should these tests be written in terms of "valid elements" rather than method call counts? 
 //	e.g. To account for differences in whether elements are destroyed or have other elements moved on top of them, achieving the same result
 
-#ifdef DOCTEST_LIBRARY_INCLUDED
+#include "PointerRange.h"
+#include "Utils.h"
+
 TEST_SUITE("Array") {
 	struct Element {
 		i32 Payload;
@@ -104,7 +106,7 @@ TEST_SUITE("Array") {
 		CHECK_LT(arr.Max(), 32); // Capacity should be reasonable after one element
 
 		size_t initial_max = arr.Max();
-		for (i32 i = 0; i < initial_max-1; ++i) {
+		for (i32 i = 0; i < initial_max - 1; ++i) {
 			arr.Add(Element(i));
 		}
 		CHECK_EQ(arr.Max(), initial_max); // Should not have grown yet
@@ -146,7 +148,7 @@ TEST_SUITE("Array") {
 
 		auto r = arr.AddZeroed(3);
 		CHECK_EQ(r.Size(), 3);
-		i32 num=0;
+		i32 num = 0;
 		for (Element& e : r) {
 			e = num++;
 		}
@@ -154,5 +156,20 @@ TEST_SUITE("Array") {
 		CHECK_EQ(arr[1].Payload, 1);
 		CHECK_EQ(arr[2].Payload, 2);
 	}
+
+	TEST_CASE("Array append") {
+		Element src[] = { 1, 2, 3, 4, 5 };
+
+		Element::Reset();
+		mu::Array<Element> arr;
+		auto r = mu::Range(src);
+		auto old_size = r.Size();
+		arr.Append(r);
+
+		CHECK_EQ(r.Size(), old_size);
+		CHECK_EQ(arr.Num(), ArraySize(src));
+		for (i32 i = 0; i < arr.Num(); ++i) {
+			CHECK_EQ(arr[i].Payload, src[i].Payload);
+		}
+	}
 }
-#endif
