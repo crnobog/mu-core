@@ -83,6 +83,12 @@
     <ClInclude Include="..\..\Source\SpookyV2.h">
       <Filter>SpookyV2</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Include\mu-core\AdaptiveRadixTree.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Include\mu-core\TaggedPointer.h">
+      <Filter>Include</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\Include\mu-core\Tests\Array_Tests.inl">
@@ -127,6 +133,12 @@
     <None Include="..\..\Include\mu-core\Benchmarks\HashTable_Benchmarks.inl">
       <Filter>Benchmarks</Filter>
     </None>
+    <None Include="..\..\Include\mu-core\Benchmarks\AdaptiveRadixTree_Benchmarks.inl">
+      <Filter>Benchmarks</Filter>
+    </None>
+    <None Include="..\..\Include\mu-core\Tests\AdaptiveRadixTree_Tests.inl">
+      <Filter>Tests</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Source\mu-core.cpp" />
@@ -147,5 +159,8 @@
     <Filter Include="SpookyV2">
       <UniqueIdentifier>{69ac6f59-0727-4108-a070-fb05aeaff590}</UniqueIdentifier>
     </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <Natvis Include="..\mu-core.natvis" />
   </ItemGroup>
 </Project>

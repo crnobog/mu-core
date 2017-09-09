@@ -27,6 +27,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Include\mu-core\AdaptiveRadixTree.h" />
     <ClInclude Include="..\..\Include\mu-core\Algorithms.h" />
     <ClInclude Include="..\..\Include\mu-core\Array.h" />
     <ClInclude Include="..\..\Include\mu-core\BitArray.h" />
@@ -50,6 +51,7 @@
     <ClInclude Include="..\..\Include\mu-core\Scope.h" />
     <ClInclude Include="..\..\Include\mu-core\String.h" />
     <ClInclude Include="..\..\Include\mu-core\StringFormat.h" />
+    <ClInclude Include="..\..\Include\mu-core\TaggedPointer.h" />
     <ClInclude Include="..\..\Include\mu-core\Tests\IotaRange_Tests.inl" />
     <ClInclude Include="..\..\Include\mu-core\TransformRange.h" />
     <ClInclude Include="..\..\Include\mu-core\Utils.h" />
@@ -57,8 +59,10 @@
     <ClInclude Include="..\..\Source\SpookyV2.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\..\Include\mu-core\Benchmarks\AdaptiveRadixTree_Benchmarks.inl" />
     <None Include="..\..\Include\mu-core\Benchmarks\Array_Benchmarks.inl" />
     <None Include="..\..\Include\mu-core\Benchmarks\HashTable_Benchmarks.inl" />
+    <None Include="..\..\Include\mu-core\Tests\AdaptiveRadixTree_Tests.inl" />
     <None Include="..\..\Include\mu-core\Tests\Algorithms_Tests.inl" />
     <None Include="..\..\Include\mu-core\Tests\Array_Tests.inl" />
     <None Include="..\..\Include\mu-core\Tests\BitArray_Tests.inl" />
@@ -75,6 +79,9 @@
   <ItemGroup>
     <ClCompile Include="..\..\Source\mu-core.cpp" />
     <ClCompile Include="..\..\Source\SpookyV2.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Natvis Include="..\mu-core.natvis" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>

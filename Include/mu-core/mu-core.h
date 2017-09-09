@@ -16,6 +16,7 @@
 #endif
 
 #include "PrimitiveTypes.h"
+#include "AdaptiveRadixTree.h"
 #include "Algorithms.h"
 #include "Array.h"
 #include "BitArray.h"
