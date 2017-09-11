@@ -25,7 +25,7 @@
     </Expand>
   </Type>
   <!-- PointerRange<T> -->
-  <Type Name="mu::ranges::PointerRange&lt;*&gt;">
+  <Type Name="mu::PointerRange&lt;*&gt;">
     <DisplayString>PointerRange Size = {m_end - m_start}</DisplayString>
     <Expand>
       <Item Name="Size">m_end - m_start</Item>
