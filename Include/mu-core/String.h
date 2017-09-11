@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include "mu-core/Array.h"
 #include "mu-core/Ranges.h"
@@ -9,7 +9,7 @@
 
 
 namespace mu {
-// #TODO: Encoding is a template parameter so conversions can be done automatically
+	// #TODO: Encoding is a template parameter so conversions can be done automatically
 	template<typename CharType>
 	class String_T {
 		Array<CharType> m_data;
@@ -28,7 +28,7 @@ namespace mu {
 			}
 			m_data.Add('\0');
 		}
-		
+
 		template<typename OtherChar, typename SizeType>
 		String_T(std::tuple<OtherChar*, SizeType> t) {
 			const auto* str = std::get<0>(t);
@@ -100,7 +100,9 @@ namespace mu {
 		template<typename RANGE, typename... RANGES>
 		void AppendRanges(RANGE r, RANGES... rs) {
 			AppendRange(r);
-			AppendRanges(rs...);
+			if constexpr(sizeof...(rs) > 0) {
+				AppendRanges(rs...);
+			}
 		}
 
 
@@ -121,20 +123,55 @@ namespace mu {
 			}
 			return Compare(other.GetRaw()) == 0;
 		}
-	private:
-		void AppendRanges() {
+
+
+		template<typename... ARGS>
+		static String_T Format(const char* fmt, ARGS... args) {
+			StringFormatOutput output{};
+			mu::Format(output, fmt, std::forward<ARGS>(args)...);
+			return output.m_string;
 		}
+
+	private:
+
+		struct StringFormatOutput : public IStringFormatOutput {
+			String_T m_string;
+			virtual void Write(StringFormatArg arg) override {
+				i32 count = 0;
+				char buffer[256];
+				switch (arg.m_type) {
+				case StringFormatArgType::C_Str:
+					m_string.Append(arg.m_c_str);
+					break;
+				case StringFormatArgType::Unsigned:
+					count = snprintf(buffer, 256, "%I64u", arg.m_uint);
+					if (count > 0) {
+						m_string.Append(buffer);
+					}
+					break;
+				case StringFormatArgType::Double:
+					count = snprintf(buffer, 256, "%f", arg.m_double);
+					if (count > 0) {
+						m_string.Append(buffer);
+					}
+					break;
+				}
+			}
+			virtual void Close() override {}
+		};
+
 		void RemoveTrailingNull() {
 			if (m_data.Num() > 0) {
 				m_data.RemoveAt(m_data.Num() - 1);
 			}
 		}
 		void AddTrailingNull() {
-			if (m_data.Num() > 0 && m_data[m_data.Num()-1] != 0) {
+			if (m_data.Num() > 0 && m_data[m_data.Num() - 1] != 0) {
 				m_data.Add(0);
 			}
 		}
 	};
+
 
 	// UTF-8 string
 	using String = String_T<char>;
@@ -149,35 +186,6 @@ namespace mu {
 	PointerRange<const CharType> Range(String_T<CharType>& s) {
 		return Range(s.GetRaw(), s.GetLength());
 	}
-
-	template<typename... ARGS>
-	String Format(ARGS&&... args) {
-		auto arr = std::array<StringFormatArg, sizeof...(args)>{ { StringFormatArg(std::forward<ARGS>(args))... }};
-		String s;
-		char buffer[256];
-		for (StringFormatArg& arg : arr) {
-			int count = 0;
-			switch (arg.m_type) {
-			case StringFormatArgType::C_Str:
-				s.Append(arg.m_c_str);
-				break;
-			case StringFormatArgType::Unsigned:
-				count = snprintf(buffer, 256, "%I64u", arg.m_uint);
-				if (count > 0) {
-					s.Append(buffer);
-				}
-				break;
-			case StringFormatArgType::Double:
-				count = snprintf(buffer, 256, "%f", arg.m_double);
-				if (count > 0) {
-					s.Append(buffer);
-				}
-				break;
-			}
-		}
-		return s;
-	}
-
 
 	String WideStringToUTF8(PointerRange<const wchar_t> in);
 	String_T<wchar_t> UTF8StringToWide(PointerRange<const char> in);

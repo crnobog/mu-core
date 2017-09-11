@@ -20,7 +20,7 @@ namespace mu {
 	struct StringFormatArg {
 		StringFormatArgType m_type = StringFormatArgType::None;
 		union {
-			std::tuple<const char*, size_t> m_c_str;
+			std::tuple<const char*, i64> m_c_str;
 			u64 m_uint;
 			double m_double;
 		};
@@ -43,8 +43,22 @@ namespace mu {
 			, m_type(StringFormatArgType::C_Str) {}
 
 		// Can we use this with std::initializer list as en entry in a parameter pack?
-		StringFormatArg(const char* c_str, size_t len);
+		StringFormatArg(const char* c_str, i64 len);
 	};
+
+	struct IStringFormatOutput {
+		virtual void Write(StringFormatArg arg) = 0;
+		virtual void Close() = 0;
+	};
+
+	void Format(IStringFormatOutput&, const char* fmt, PointerRange<StringFormatArg> args);
+
+	template<typename... ARGS>
+	void Format(IStringFormatOutput& output, const char* fmt, ARGS... args) {
+		ValidateFormatString(fmt, args...);
+		StringFormatArg args[] = { StringFormatArg(args)... };
+		Format(output, fmt, Range(args));
+	}
 
 	template<typename T>
 	StringFormatArgType GetStringFormatArgType(T&& t) { return StringFormatArg(t).m_type; }
@@ -54,7 +68,7 @@ namespace mu {
 
 	template<typename... ARGS>
 	void ValidateFormatString(const char* fmt, ARGS... args) {
-		StringFormatArgType arg_types[] = { GetStringFormatArgType(args)... };
+		StringFormatArgType arg_types[] = { StringFormatArg(args).m_type... };
 		ValidateFormatString(fmt, Range(arg_types));
 	}
 }

@@ -73,87 +73,148 @@ namespace mu {
 	}
 }
 
+namespace mu {
+	struct DebugLogFormatOutput : public mu::IStringFormatOutput {
+		wchar_t m_buffer[1024];
+		wchar_t* m_cursor = m_buffer;
+
+		void Flush() {
+			if (m_cursor != m_buffer) {
+				*m_cursor = 0; // null terminate before printing
+				OutputDebugStringW(m_buffer);
+			}
+			m_cursor = m_buffer;
+		}
+		i64 RemainingSpace() { return ArraySize(m_buffer) - (m_cursor - m_buffer) - 1; /* Need 1 to put a null terminator */ };
+		virtual void Write(StringFormatArg arg) override {
+			switch (arg.m_type) {
+			case StringFormatArgType::C_Str:
+			{
+				auto[s, len] = arg.m_c_str;
+
+				// We don't know the internal size of the converter so flush and then copy wholesale 
+				// - should the converter return a size tuple so we can adaptively avoid each flush without strlen?
+				// - or we could expose the max size from the converter
+				Flush();
+				StringConvRange_UTF8_UTF16 conv{ Range(s, s + len) };
+				for (; !conv.IsEmpty(); conv.Advance()) {
+					OutputDebugStringW(conv.Front());
+				}
+			}
+			break;
+			case StringFormatArgType::Unsigned:
+			{
+				if (RemainingSpace() <= 20) {
+					Flush();
+				}
+				int written = swprintf(m_cursor, RemainingSpace(), L"%llu", arg.m_uint);
+				if (written >= 0) {
+					m_cursor += written;
+				}
+			}
+			break;
+			default:
+				throw std::runtime_error("Invalid argument type to log");
+			}
+		}
+		virtual void Close() override {
+			if (RemainingSpace() < 2) {
+				Flush();
+			}
+			int written = swprintf(m_cursor, RemainingSpace(), L"\n");
+			if (written > 0) {
+				m_cursor += written;
+			}
+			Flush();
+		}
+	};
+}
+
 void mu::dbg::LogInternal(mu::dbg::details::LogLevel, const char* fmt, PointerRange<StringFormatArg> args) {
-	wchar_t local_buf[1024];
-	wchar_t* local_cursor = local_buf;
-	auto LocalFlush = [&]() {
-		if (local_cursor != local_buf) {
-			*local_cursor = 0; // null terminate before printing
-			OutputDebugStringW(local_buf);
-		}
-		local_cursor = local_buf;
-	};
-	auto RemainingSpace = [&]() { return ArraySize(local_buf) - (local_cursor - local_buf); };
+	mu::DebugLogFormatOutput output;
+	Format(output, fmt, args);
+	return;
 
-	auto WriteString = [&](const char* s, size_t len) {
+	//wchar_t local_buf[1024];
+	//wchar_t* local_cursor = local_buf;
+	//auto LocalFlush = [&]() {
+	//	if (local_cursor != local_buf) {
+	//		*local_cursor = 0; // null terminate before printing
+	//		OutputDebugStringW(local_buf);
+	//	}
+	//	local_cursor = local_buf;
+	//};
+	//auto RemainingSpace = [&]() { return ArraySize(local_buf) - (local_cursor - local_buf); };
 
-		// We don't know the internal size of the converter so flush and then copy wholesale 
-		// - should the converter return a size tuple so we can adaptively avoid each flush without strlen?
-		// - or we could expose the max size from the converter
-		LocalFlush();
-		StringConvRange_UTF8_UTF16 conv{ Range(s, s + len) };
-		for (; !conv.IsEmpty(); conv.Advance()) {
-			OutputDebugStringW(conv.Front());
-		}
-	};
-	auto WriteArg = [&](const StringFormatArg& arg) {
-		switch (arg.m_type) {
-		case StringFormatArgType::C_Str:
-		{
-			auto[s, size] = arg.m_c_str;
-			WriteString(s, size);
-		}
-		break;
-		case StringFormatArgType::Unsigned:
-		{
-			if (RemainingSpace() <= 20) {
-				LocalFlush();
-			}
-			int written = swprintf(local_cursor, RemainingSpace(), L"%llu", arg.m_uint);
-			if (written >= 0) {
-				local_cursor += written;
-			}
-		}
-		break;
-		default:
-			throw std::runtime_error("Invalid argument type to log");
-		}
-	};
+	//auto WriteString = [&](const char* s, size_t len) {
 
-	const char* block_begin = fmt;
-	const char* cursor = fmt;
-	for (; *cursor != '\0'; ++cursor) {
-		if (*cursor != '{') { continue; }
-		if (block_begin != cursor) {
-			// Output bare string so far
-			WriteString(block_begin, cursor - block_begin);
-		}
-		++cursor;
-		if (*cursor == '{') {
-			// Escaped char, begin a new block from here
-			block_begin = cursor;
-			continue;
-		}
-		else if (*cursor == '}') {
-			// Empty format string specified, emit next unemitted format arg
-			WriteArg(args.Front());
-			args.Advance();
-			block_begin = cursor + 1;
-			continue; // will increment cursor to == block_begin
-		}
-		else {
-			throw std::runtime_error("Invalid format string, only {} is implemented");
-		}
-	}
-	if (block_begin != cursor) {
-		WriteString(block_begin, cursor - block_begin);
-	}
+	//	// We don't know the internal size of the converter so flush and then copy wholesale 
+	//	// - should the converter return a size tuple so we can adaptively avoid each flush without strlen?
+	//	// - or we could expose the max size from the converter
+	//	LocalFlush();
+	//	StringConvRange_UTF8_UTF16 conv{ Range(s, s + len) };
+	//	for (; !conv.IsEmpty(); conv.Advance()) {
+	//		OutputDebugStringW(conv.Front());
+	//	}
+	//};
+	//auto WriteArg = [&](const StringFormatArg& arg) {
+	//	switch (arg.m_type) {
+	//	case StringFormatArgType::C_Str:
+	//	{
+	//		auto[s, size] = arg.m_c_str;
+	//		WriteString(s, size);
+	//	}
+	//	break;
+	//	case StringFormatArgType::Unsigned:
+	//	{
+	//		if (RemainingSpace() <= 20) {
+	//			LocalFlush();
+	//		}
+	//		int written = swprintf(local_cursor, RemainingSpace(), L"%llu", arg.m_uint);
+	//		if (written >= 0) {
+	//			local_cursor += written;
+	//		}
+	//	}
+	//	break;
+	//	default:
+	//		throw std::runtime_error("Invalid argument type to log");
+	//	}
+	//};
 
-	int written = swprintf(local_cursor, RemainingSpace(), L"\n");
-	if (written > 0) {
-		local_cursor += written;
-	}
-	LocalFlush();
+	//const char* block_begin = fmt;
+	//const char* cursor = fmt;
+	//for (; *cursor != '\0'; ++cursor) {
+	//	if (*cursor != '{') { continue; }
+	//	if (block_begin != cursor) {
+	//		// Output bare string so far
+	//		WriteString(block_begin, cursor - block_begin);
+	//	}
+	//	++cursor;
+	//	if (*cursor == '{') {
+	//		// Escaped char, begin a new block from here
+	//		block_begin = cursor;
+	//		continue;
+	//	}
+	//	else if (*cursor == '}') {
+	//		// Empty format string specified, emit next unemitted format arg
+	//		WriteArg(args.Front());
+	//		args.Advance();
+	//		block_begin = cursor + 1;
+	//		continue; // will increment cursor to == block_begin
+	//	}
+	//	else {
+	//		throw std::runtime_error("Invalid format string, only {} is implemented");
+	//	}
+	//}
+	//if (block_begin != cursor) {
+	//	WriteString(block_begin, cursor - block_begin);
+	//}
+
+	//int written = swprintf(local_cursor, RemainingSpace(), L"\n");
+	//if (written > 0) {
+	//	local_cursor += written;
+	//}
+	//LocalFlush();
 }
 
 
@@ -202,66 +263,6 @@ mu::Array<u8> LoadFileToArray(const char* path, FileReadType type) {
 }
 
 namespace mu {
-	StringFormatArg::StringFormatArg(const StringFormatArg& other) : m_type(other.m_type) {
-		switch (m_type) {
-		case StringFormatArgType::C_Str:
-			m_c_str = other.m_c_str;
-			break;
-		case StringFormatArgType::Unsigned:
-			m_uint = other.m_uint;
-			break;
-		}
-	}
-	StringFormatArg::StringFormatArg(StringFormatArg&& other) : m_type(other.m_type) {
-		switch (m_type) {
-		case StringFormatArgType::C_Str:
-			m_c_str = other.m_c_str;
-			break;
-		case StringFormatArgType::Unsigned:
-			m_uint = other.m_uint;
-			break;
-		}
-	}
-	StringFormatArg::StringFormatArg(const char* c_str)
-		: m_type(StringFormatArgType::C_Str)
-		, m_c_str(c_str, strlen(c_str)) {}
-
-	StringFormatArg::StringFormatArg(const char* c_str, size_t len)
-		: m_type(StringFormatArgType::C_Str)
-		, m_c_str(c_str, len) {}
-
-	StringFormatArg::StringFormatArg(const String_T<char>& str) {
-		if (str.IsEmpty()) {
-			m_type = StringFormatArgType::None;
-		}
-		else {
-			m_type = StringFormatArgType::C_Str;
-			m_c_str = { str.GetRaw(), str.GetLength() };
-		}
-	}
-
-	StringFormatArg::StringFormatArg(i32 i)
-		: m_type(StringFormatArgType::Unsigned)
-		, m_uint(i) {}
-
-	StringFormatArg::StringFormatArg(u32 u)
-		: m_type(StringFormatArgType::Unsigned)
-		, m_uint(u) {}
-
-	StringFormatArg::StringFormatArg(float f)
-		: m_type(StringFormatArgType::Double)
-		, m_double(f) {}
-
-	StringFormatArg::StringFormatArg(double d)
-		: m_type(StringFormatArgType::Double)
-		, m_double(d) {}
-
-	StringFormatArg::StringFormatArg(size_t s)
-		: m_type(StringFormatArgType::Unsigned)
-		, m_uint(s) {}
-
-
-
 	namespace paths {
 		PointerRange<const char> GetDirectory(PointerRange<const char> r) {
 			auto end = FindLast(r, [](const char c) { return c == '/' || c == '\\'; });

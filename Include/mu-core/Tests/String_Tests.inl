@@ -1,6 +1,6 @@
-TEST_SUITE("String") {
+﻿TEST_SUITE("String") {
 	using namespace mu;
-	
+
 	TEST_CASE("Construct from cstring") {
 		String s{ "test" };
 		CHECK_EQ(4, s.GetLength());
@@ -38,12 +38,12 @@ TEST_SUITE("String") {
 		String a{ "testA" };
 		String b{ "testB" };
 
-		String c = Format(a, b);
+		String c = String::Format("{}{}", a, b);
 		String expected = "testAtestB";
 		CHECK_EQ(expected, c);
 	}
 	TEST_CASE("Format: int") {
-		String s = Format(100);
+		String s = String::Format("{}", 100);
 		String expected = "100";
 		CHECK_EQ(expected, s);
 	}
