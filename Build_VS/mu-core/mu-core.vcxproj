@@ -80,6 +80,7 @@
   <ItemGroup>
     <ClCompile Include="..\..\Source\mu-core.cpp" />
     <ClCompile Include="..\..\Source\SpookyV2.cpp" />
+    <ClCompile Include="..\..\Source\StringFormat.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Natvis Include="..\mu-core.natvis" />

@@ -1,4 +1,4 @@
-#define MU_CORE_IMPL
+﻿#define MU_CORE_IMPL
 #include "mu-core/mu-core.h"
 
 #include <codecvt>
@@ -48,8 +48,7 @@ public:
 
 class StringConvRange_UTF8_UTF16 : public StringConvRange_UTF8_UTF16_Base<StringConvRange_UTF8_UTF16, char, wchar_t> {
 public:
-	StringConvRange_UTF8_UTF16(mu::PointerRange<const char> in) : StringConvRange_UTF8_UTF16_Base(in) {
-	}
+	StringConvRange_UTF8_UTF16(mu::PointerRange<const char> in) : StringConvRange_UTF8_UTF16_Base(in) {}
 };
 class StringConvRange_UTF16_UTF8 : public StringConvRange_UTF8_UTF16_Base<StringConvRange_UTF16_UTF8, wchar_t, char> {
 public:
@@ -62,7 +61,7 @@ namespace mu {
 		for (StringConvRange_UTF16_UTF8 conv{ in }; !conv.IsEmpty(); conv.Advance()) {
 			s.Append(conv.Front());
 		}
-		
+
 		return s;
 	}
 	String_T<wchar_t> UTF8StringToWide(PointerRange<const char> in) {
@@ -74,7 +73,7 @@ namespace mu {
 	}
 }
 
-void mu::dbg::LogInternal(mu::dbg::details::LogLevel, i32 count, StringFormatArg* args) {
+void mu::dbg::LogInternal(mu::dbg::details::LogLevel, const char* fmt, PointerRange<StringFormatArg> args) {
 	wchar_t local_buf[1024];
 	wchar_t* local_cursor = local_buf;
 	auto LocalFlush = [&]() {
@@ -85,24 +84,26 @@ void mu::dbg::LogInternal(mu::dbg::details::LogLevel, i32 count, StringFormatArg
 		local_cursor = local_buf;
 	};
 	auto RemainingSpace = [&]() { return ArraySize(local_buf) - (local_cursor - local_buf); };
-	
-	for ( auto& arg : Range(args, args+count) ) {
+
+	auto WriteString = [&](const char* s, size_t len) {
+
+		// We don't know the internal size of the converter so flush and then copy wholesale 
+		// - should the converter return a size tuple so we can adaptively avoid each flush without strlen?
+		// - or we could expose the max size from the converter
+		LocalFlush();
+		StringConvRange_UTF8_UTF16 conv{ Range(s, s + len) };
+		for (; !conv.IsEmpty(); conv.Advance()) {
+			OutputDebugStringW(conv.Front());
+		}
+	};
+	auto WriteArg = [&](const StringFormatArg& arg) {
 		switch (arg.m_type) {
 		case StringFormatArgType::C_Str:
 		{
-			size_t size = std::get<1>(arg.m_c_str);
-			const char* s = std::get<0>(arg.m_c_str);
-
-			// We don't know the internal size of the converter so flush and then copy wholesale 
-			// - should the converter return a size tuple so we can adaptively avoid each flush without strlen?
-			// - or we could expose the max size from the converter
-			LocalFlush();
-			StringConvRange_UTF8_UTF16 conv{ Range(s, s + size) };
-			for (; !conv.IsEmpty(); conv.Advance()) {
-				OutputDebugStringW(conv.Front());
-			}
+			auto[s, size] = arg.m_c_str;
+			WriteString(s, size);
 		}
-			break;
+		break;
 		case StringFormatArgType::Unsigned:
 		{
 			if (RemainingSpace() <= 20) {
@@ -113,10 +114,39 @@ void mu::dbg::LogInternal(mu::dbg::details::LogLevel, i32 count, StringFormatArg
 				local_cursor += written;
 			}
 		}
-			break;
+		break;
 		default:
-			throw new std::runtime_error("Invalid argument type to log");
+			throw std::runtime_error("Invalid argument type to log");
 		}
+	};
+
+	const char* block_begin = fmt;
+	const char* cursor = fmt;
+	for (; *cursor != '\0'; ++cursor) {
+		if (*cursor != '{') { continue; }
+		if (block_begin != cursor) {
+			// Output bare string so far
+			WriteString(block_begin, cursor - block_begin);
+		}
+		++cursor;
+		if (*cursor == '{') {
+			// Escaped char, begin a new block from here
+			block_begin = cursor;
+			continue;
+		}
+		else if (*cursor == '}') {
+			// Empty format string specified, emit next unemitted format arg
+			WriteArg(args.Front());
+			args.Advance();
+			block_begin = cursor + 1;
+			continue; // will increment cursor to == block_begin
+		}
+		else {
+			throw std::runtime_error("Invalid format string, only {} is implemented");
+		}
+	}
+	if (block_begin != cursor) {
+		WriteString(block_begin, cursor - block_begin);
 	}
 
 	int written = swprintf(local_cursor, RemainingSpace(), L"\n");
@@ -196,6 +226,10 @@ namespace mu {
 		: m_type(StringFormatArgType::C_Str)
 		, m_c_str(c_str, strlen(c_str)) {}
 
+	StringFormatArg::StringFormatArg(const char* c_str, size_t len)
+		: m_type(StringFormatArgType::C_Str)
+		, m_c_str(c_str, len) {}
+
 	StringFormatArg::StringFormatArg(const String_T<char>& str) {
 		if (str.IsEmpty()) {
 			m_type = StringFormatArgType::None;
@@ -244,7 +278,7 @@ namespace mu {
 				// return input, must be filename only?
 				return r;
 			}
-			end.Advance(); 
+			end.Advance();
 			return end;
 		}
 
@@ -258,7 +292,7 @@ namespace mu {
 			if (!dot.IsEmpty()) {
 				dot.Advance();
 			}
-			return dot; 
+			return dot;
 		}
 
 		PointerRange<const char> GetExecutablePath() {
@@ -289,4 +323,3 @@ namespace mu {
 		return SpookyHash::Hash64(data, num_bytes, 0);
 	}
 }
-
