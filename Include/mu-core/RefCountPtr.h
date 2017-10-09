@@ -20,7 +20,8 @@ public:
 	RefCountPtr() : m_ptr(nullptr) {
 	}
 
-	RefCountPtr(const RefCountPtr& other) : m_ptr(other.Steal()) {
+	RefCountPtr(const RefCountPtr& other) : m_ptr(other.Get()) {
+		IncRef();
 	}
 
 	RefCountPtr(RefCountPtr&& other) : m_ptr(other.Steal()) {
@@ -42,6 +43,7 @@ public:
 	RefCountPtr& operator=(RefCountPtr&& other) {
 		Clear();
 		m_ptr = other.Steal();
+		return *this;
 	}
 
 	OBJECT* Steal() {
@@ -53,7 +55,7 @@ public:
 	void Set(OBJECT* ptr) {
 		Clear();
 		m_ptr = ptr;
-		AddRef();
+		IncRef();
 	}
 
 	void Clear() {
@@ -68,13 +70,9 @@ public:
 		return &m_ptr;
 	}
 
-	OBJECT* Get() { return m_ptr; }
-	OBJECT* operator->() { return m_ptr; }
-	operator OBJECT*() { return m_ptr; }
-
-	const OBJECT* Get() const { return m_ptr; }
-	const OBJECT* operator->() const { return m_ptr; }
-	operator const OBJECT*() const { return m_ptr; }
+	OBJECT* Get() const { return m_ptr; }
+	OBJECT* operator->() const { return m_ptr; }
+	operator OBJECT*() const { return m_ptr; }
 
 	explicit operator bool() const {
 		return m_ptr != nullptr;

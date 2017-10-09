@@ -1,10 +1,14 @@
 #pragma once
 
-#include <cstdint>
+#include "mu-core/Array.h"
+#include "mu-core/String.h"
 
-#include "Array.h"
+enum class FileReadType {
+	Text,
+	Binary,
+};
 
-Array<uint8_t> LoadFileToArray(const char* path);
+mu::Array<uint8_t> LoadFileToArray(const char* path, FileReadType type);
 
 class FileReader
 {
@@ -15,8 +19,8 @@ public:
 
 	static FileReader Open(const char* path);
 
-	mu::ranges::PointerRange<uint8_t> Read(mu::ranges::PointerRange<uint8_t> dest_range);
+	mu::PointerRange<u8> Read(mu::PointerRange<u8> dest_range);
 
 	bool IsValidFile() const { return m_handle != nullptr; }
-	int64_t GetFileSize() const;
+	i64 GetFileSize() const;
 };
