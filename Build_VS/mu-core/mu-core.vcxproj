@@ -43,6 +43,7 @@
     <ClInclude Include="..\..\Include\mu-core\TaggedPointer.h" />
     <ClInclude Include="..\..\Include\mu-core\Tests\IotaRange_Tests.inl" />
     <ClInclude Include="..\..\Include\mu-core\TransformRange.h" />
+    <ClInclude Include="..\..\Include\mu-core\UnitTesting.h" />
     <ClInclude Include="..\..\Include\mu-core\Utils.h" />
     <ClInclude Include="..\..\Include\mu-core\ZipRange.h" />
     <ClInclude Include="..\..\Source\SpookyV2.h" />

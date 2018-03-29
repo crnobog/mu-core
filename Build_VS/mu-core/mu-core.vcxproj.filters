@@ -92,6 +92,9 @@
     <ClInclude Include="..\..\Include\mu-core\Global.h">
       <Filter>Include</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Include\mu-core\UnitTesting.h">
+      <Filter>Include</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\Include\mu-core\Tests\Array_Tests.inl">
