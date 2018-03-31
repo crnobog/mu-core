@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include <initializer_list>
 
@@ -73,14 +73,23 @@ namespace mu {
 			return EmplaceSafe(std::forward<T>(item));
 		}
 
-		T& AddZeroed() {
-			EnsureSpace(m_num + 1);
-			T* t = m_data + m_num++;
-			memset(t, 0, sizeof(T));
-			return *t;
+		PointerRange<T> Add(std::initializer_list<T> elems) {
+			EnsureSpace(m_num + elems.size());
+			PointerRange<T> r{ m_data + m_num, m_data + elems.size() };
+			for (const T& elem : elems) {
+				new(&AddSafe()) T(elem);
+			}
+			return r;
 		}
 
 		// Returns the range of new items
+		PointerRange<T> AddDefaulted(size_t count) {
+			EnsureSpace(m_num + count);
+			T* first = m_data + m_num; // After growing, pointer is valid
+			for (size_t i = 0; i < count; ++i) { EmplaceSafe(T{}); }
+			return PointerRange<T>{first, first + count};
+		}
+
 		PointerRange<T> AddZeroed(size_t count) {
 			EnsureSpace(m_num + count);
 			T* first = m_data + m_num; // After growing, pointer is valid
@@ -96,16 +105,16 @@ namespace mu {
 			return PointerRange<T>{first, first + count};
 		}
 
-		void AddUnique(const T& item) {
-			if (!Contains(item)) {
-				Add(item);
-			}
+		size_t AddUnique(const T& item) {
+			size_t idx;
+			if (FindIndex(item, idx)) { return idx; }
+			else return Add(item);
 		}
 
-		void AddUnique(T&& item) {
-			if (!Contains(item)) {
-				Add(std::forward<T>(item));
-			}
+		size_t AddUnique(T&& item) {
+			size_t idx;
+			if (FindIndex(item, idx)) { return idx; }
+			else return Add(std::move(item));
 		}
 
 		template<typename... US>
@@ -156,22 +165,16 @@ namespace mu {
 		T* Data() { return m_data; }
 		const T* Data() const { return m_data; }
 
-		u8* Bytes() { return (u8*)m_data; }
-		const u8* Bytes() const { return (const u8*)m_data; }
+		PointerRange<u8> Bytes() { return ByteRange((u8*)m_data, m_num * sizeof(T)); }
+		PointerRange<const u8> Bytes() const { return ByteRange((u8*)m_data, m_num * sizeof(T)); }
 
 		size_t Num() const { return m_num; }
-		size_t NumBytes() const { return m_num * sizeof(T); }
 		size_t Max() const { return m_max; }
 		bool IsEmpty() const { return m_num == 0; }
 
-		// TODO: Remove in favour of algorithms?
 		bool Contains(const T& item) const {
-			for (const T& t : *this) {
-				if (t == item) {
-					return true;
-				}
-			}
-			return false;
+			size_t i;
+			return FindIndex(item, i);
 		}
 
 		auto begin() { return mu::MakeRangeIterator(mu::Range(m_data, m_num)); }
@@ -181,6 +184,16 @@ namespace mu {
 		auto end() const { return mu::MakeRangeSentinel(); }
 
 	private:
+		bool FindIndex(const T& item, size_t& out_idx) const {
+			for (size_t i = 0; i < m_num; ++i) {
+				if (item == m_data[i]) {
+					out_idx = i;
+					return true;
+				}
+			}
+			return false;
+		}
+
 		void InitEmpty(size_t num) {
 			m_data = (T*)malloc(sizeof(T) * num);
 			m_num = 0;

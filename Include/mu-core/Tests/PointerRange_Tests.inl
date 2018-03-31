@@ -1,4 +1,4 @@
-TEST_SUITE("PointerRange") {
+﻿TEST_SUITE("PointerRange") {
 	using namespace mu;
 
 	TEST_CASE("Size") {
@@ -70,5 +70,38 @@ TEST_SUITE("PointerRange") {
 			++i;
 		}
 	}
-}
 
+	TEST_CASE("ByteRanges") {
+		struct Foo { i32 value1; i32 value2; };
+		Foo f;
+		Foo fs[2];
+
+		auto ref_range = ByteRange(f);
+		CHECK_EQ(&f, (Foo*)&ref_range.Front());
+		CHECK_EQ(sizeof(Foo), ref_range.Size());
+
+		auto array_ref_range = ByteRange(fs);
+		CHECK_EQ(&fs[0], (Foo*)&array_ref_range.Front());
+		CHECK_EQ(sizeof(Foo) * 2, array_ref_range.Size());
+
+		auto ptr_range = ByteRange(fs, 2);
+		CHECK_EQ(&fs[0], (Foo*)&ptr_range.Front());
+		CHECK_EQ(sizeof(Foo) * 2, ptr_range.Size());
+	}
+
+	TEST_CASE("RangeToBytes") {
+		i32 is[] = { -1, -1, -1, -1 };
+
+		PointerRange<i32> ir = Range(is);
+		static_assert(std::is_same_v<decltype(ir.Bytes()), PointerRange<u8>>, "Type of PointerRange<i32>::Bytes");
+		PointerRange<u8> ur = ir.Bytes();
+		CHECK_EQ((void*)&ir.Front(), (void*)&ur.Front());
+		CHECK_EQ(ir.Size() * sizeof(i32), ur.Size());
+
+		PointerRange<const i32> cir = Range(is);
+		static_assert(std::is_same_v<decltype(cir.Bytes()), PointerRange<const u8>>, "Type of PointerRange<const i32>::Bytes");
+		PointerRange<const u8> cur = cir.Bytes();
+		CHECK_EQ((void*)&cir.Front(), (void*)&cur.Front());
+		CHECK_EQ(cir.Size() * sizeof(i32), cur.Size());
+	}
+}
