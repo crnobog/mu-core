@@ -92,7 +92,11 @@
     <ClInclude Include="..\..\Include\mu-core\Global.h">
       <Filter>Include</Filter>
     </ClInclude>
+<<<<<<< HEAD
+    <ClInclude Include="..\..\Include\mu-core\UnitTesting.h">
+=======
     <ClInclude Include="..\..\Include\mu-core\Timer.h">
+>>>>>>> from-muteki
       <Filter>Include</Filter>
     </ClInclude>
   </ItemGroup>
