@@ -1,5 +1,6 @@
 ﻿#include "mu-core/StringFormat.h"
 #include "mu-core/String.h"
+#include "mu-core/Debug.h"
 #include <stdexcept>
 
 namespace mu {
@@ -7,29 +8,39 @@ namespace mu {
 		switch (m_type) {
 		case StringFormatArgType::C_Str:
 			m_c_str = other.m_c_str;
-			break;
+			return;
 		case StringFormatArgType::Unsigned:
 			m_uint = other.m_uint;
-			break;
+			return;
+		case StringFormatArgType::Double:
+			m_double = other.m_double;
+			return;
 		}
+		Assert(false);
 	}
 	StringFormatArg::StringFormatArg(StringFormatArg&& other) : m_type(other.m_type) {
 		switch (m_type) {
 		case StringFormatArgType::C_Str:
 			m_c_str = other.m_c_str;
-			break;
+			return;
 		case StringFormatArgType::Unsigned:
 			m_uint = other.m_uint;
-			break;
+			return;
+		case StringFormatArgType::Double:
+			m_double = other.m_double;
+			return;
 		}
+		Assert(false);
 	}
 	StringFormatArg::StringFormatArg(const char* c_str)
 		: m_type(StringFormatArgType::C_Str)
-		, m_c_str(c_str, strlen(c_str)) {}
+		, m_c_str(c_str, strlen(c_str)) {
+	}
 
 	StringFormatArg::StringFormatArg(const char* c_str, i64 len)
 		: m_type(StringFormatArgType::C_Str)
-		, m_c_str(c_str, len) {}
+		, m_c_str(c_str, len) {
+	}
 
 	StringFormatArg::StringFormatArg(const String_T<char>& str) {
 		if (str.IsEmpty()) {
@@ -43,23 +54,28 @@ namespace mu {
 
 	StringFormatArg::StringFormatArg(i32 i)
 		: m_type(StringFormatArgType::Unsigned)
-		, m_uint(i) {}
+		, m_uint(i) {
+	}
 
 	StringFormatArg::StringFormatArg(u32 u)
 		: m_type(StringFormatArgType::Unsigned)
-		, m_uint(u) {}
+		, m_uint(u) {
+	}
 
 	StringFormatArg::StringFormatArg(float f)
 		: m_type(StringFormatArgType::Double)
-		, m_double(f) {}
+		, m_double(f) {
+	}
 
 	StringFormatArg::StringFormatArg(double d)
 		: m_type(StringFormatArgType::Double)
-		, m_double(d) {}
+		, m_double(d) {
+	}
 
 	StringFormatArg::StringFormatArg(size_t s)
 		: m_type(StringFormatArgType::Unsigned)
-		, m_uint(s) {}
+		, m_uint(s) {
+	}
 
 	void ValidateFormatString(const char* fmt) {
 		ValidateFormatString(fmt, {});

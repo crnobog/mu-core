@@ -92,9 +92,12 @@
     <ClInclude Include="..\..\Include\mu-core\Global.h">
       <Filter>Include</Filter>
     </ClInclude>
+<<<<<<< Updated upstream
+=======
     <ClInclude Include="..\..\Include\mu-core\Timer.h">
       <Filter>Include</Filter>
     </ClInclude>
+>>>>>>> Stashed changes
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\Include\mu-core\Tests\Array_Tests.inl">
