@@ -18,7 +18,7 @@
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{ECB4FC17-6F71-4B10-8BFD-CC29450A37BD}</ProjectGuid>
     <RootNamespace>mucoretests</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.15063.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup>
